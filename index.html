@@ -189,12 +189,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -223,6 +223,203 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/09/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/03/09/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">进程间通信方式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-03-09 22:41:34 / Modified: 22:45:47" itemprop="dateCreated datePublished" datetime="2021-03-09T22:41:34+08:00">2021-03-09</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <table>
+<thead>
+<tr class="header">
+<th>方式</th>
+<th>传输的信息量</th>
+<th>使用场景</th>
+<th>关键词</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>信号</td>
+<td>少量</td>
+<td>任何</td>
+<td>硬件来源、软件来源 / 信号队列</td>
+</tr>
+<tr class="even">
+<td>管道</td>
+<td>大量</td>
+<td>亲缘进程间</td>
+<td>单向流动 / 内核缓冲区 / 循环队列 / 没有格式的字节流 / 操作系统负责同步</td>
+</tr>
+<tr class="odd">
+<td>命名管道</td>
+<td>大量</td>
+<td>任何</td>
+<td>磁盘文件 / 访问权限 / 无数据块 / 内核缓冲区 / 操作系统负责同步</td>
+</tr>
+<tr class="even">
+<td>信号量</td>
+<td>N</td>
+<td>任何</td>
+<td>互斥同步 / 原子性 / P 减 V 增</td>
+</tr>
+<tr class="odd">
+<td>共享内存</td>
+<td>大量</td>
+<td>多个进程</td>
+<td>内存映射 / 简单快速 / 操作系统不保证同步</td>
+</tr>
+<tr class="even">
+<td>消息队列</td>
+<td>比信号多，但有限制</td>
+<td>任何</td>
+<td>有格式 / 按消息类型过滤 / 操作系统负责同步</td>
+</tr>
+<tr class="odd">
+<td>套接字</td>
+<td>大量</td>
+<td>不同主机的进程</td>
+<td>读缓存区 / 写缓冲区 / 操作系统负责同步</td>
+</tr>
+</tbody>
+</table>
+<h2 id="参考">参考</h2>
+<p>https://imageslr.github.io/2020/02/26/ipc.html</p>
+<p>http://akaedu.github.io/book/ch30s04.html#id2868153</p>
+<p>https://blog.ailemon.me/2018/03/19/the-theory-and-implemention-on-five-ways-for-communication-between-processings/</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/09/%E9%9D%A2%E8%AF%95%E9%A2%98%E6%B1%87%E6%80%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/03/09/%E9%9D%A2%E8%AF%95%E9%A2%98%E6%B1%87%E6%80%BB/" class="post-title-link" itemprop="url">面试题汇总</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-03-09 22:15:47 / Modified: 22:43:33" itemprop="dateCreated datePublished" datetime="2021-03-09T22:15:47+08:00">2021-03-09</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="操作系统">操作系统</h2>
+<h3 id="进程间通信方式">进程间通信方式</h3>
+<details>
+<summary>
+答案
+</summary>
+<p>
+文件、信号、套接字（网络套接字(socket) 和 Unix 域套接字）、消息队列、管道、命名管道、信号量、共享内存、内存映射文件
+</p>
+<a href="2021/03/09/进程间通信方式">原理及适用场景</a>
+</details>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -329,7 +526,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2021-03-09 15:49:54 / Modified: 20:44:50" itemprop="dateCreated datePublished" datetime="2021-03-09T15:49:54+08:00">2021-03-09</time>
+      <time title="Created: 2021-03-09 15:49:54 / Modified: 22:39:42" itemprop="dateCreated datePublished" datetime="2021-03-09T15:49:54+08:00">2021-03-09</time>
     </span>
 
   
@@ -349,6 +546,12 @@ e=mc^2
 \]</span></p>
 <p><img src="/images/603021455.448700.jpg" width=10% height=10% align=center/></p>
 <div class="pdf-container" data-target="/pdfs/Git-Cheatsheet.pdf" data-height="500px"></div>
+<details>
+<summary>
+点击展开
+</summary>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;hello world!&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br></pre></td></tr></table></figure>
+</details>
 
       
     </div>
