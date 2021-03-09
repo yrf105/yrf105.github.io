@@ -329,7 +329,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2021-03-09 15:49:54 / Modified: 19:45:08" itemprop="dateCreated datePublished" datetime="2021-03-09T15:49:54+08:00">2021-03-09</time>
+      <time title="Created: 2021-03-09 15:49:54 / Modified: 20:08:55" itemprop="dateCreated datePublished" datetime="2021-03-09T15:49:54+08:00">2021-03-09</time>
     </span>
 
   
@@ -342,7 +342,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>hello world!</p>
+          <p>hello world! <span class="math display">\[
+\begin{equation} 
+e=mc^2
+\end{equation}
+\]</span></p>
+<p><img src="helloworld.assets/603021455.448700-1615291685784.jpg" alt="603021455.448700" style="zoom:5%;" /></p>
 
       
     </div>
@@ -421,6 +426,39 @@
   
 
 
+
+
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
 
 
 
