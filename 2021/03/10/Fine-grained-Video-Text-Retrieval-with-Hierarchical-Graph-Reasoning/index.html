@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"algolia":{"appID":"JPGR7YFEVR","apiKey":"3edec261c571a17c4749395953253b04","indexName":"myblog","hits":{"per_page":10}}};
+  </script>
+<meta name="description" content="摘要 通过学习联合嵌入空间来度量跨模态相似度的方法，不能很好的表示诸如：场景、目标、动作及其构成等，复杂的视觉和文本细节。本文提出 HGR （Hierarchical Graph Reasoning，分层图推理）模型。HGR 将图像-文本匹配分解为从全局到局部的多个层次（global-to-local levels）。具体来讲，HGR 将文本结构成层次化语义图，包括：事件（events）、动作（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fine-grained Video-Text Retrieval with Hierarchical Graph Reasoning">
+<meta property="og:url" content="http://example.com/2021/03/10/Fine-grained-Video-Text-Retrieval-with-Hierarchical-Graph-Reasoning/index.html">
+<meta property="og:site_name" content="wddxrw&#39;s blog">
+<meta property="og:description" content="摘要 通过学习联合嵌入空间来度量跨模态相似度的方法，不能很好的表示诸如：场景、目标、动作及其构成等，复杂的视觉和文本细节。本文提出 HGR （Hierarchical Graph Reasoning，分层图推理）模型。HGR 将图像-文本匹配分解为从全局到局部的多个层次（global-to-local levels）。具体来讲，HGR 将文本结构成层次化语义图，包括：事件（events）、动作（">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/image-20210310090827848.png">
+<meta property="og:image" content="http://example.com/images/image-20210310104929669.png">
+<meta property="og:image" content="http://example.com/images/image-20210310112709729.png">
+<meta property="og:image" content="http://example.com/images/image-20210310112930425.png">
+<meta property="article:published_time" content="2021-03-10T00:08:37.000Z">
+<meta property="article:modified_time" content="2021-03-10T03:39:02.783Z">
+<meta property="article:author" content="wddxrw">
+<meta property="article:tag" content="论文阅读">
+<meta property="article:tag" content="跨模态检索">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/image-20210310090827848.png">
+
+
+<link rel="canonical" href="http://example.com/2021/03/10/Fine-grained-Video-Text-Retrieval-with-Hierarchical-Graph-Reasoning/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<title>Fine-grained Video-Text Retrieval with Hierarchical Graph Reasoning | wddxrw's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">wddxrw's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchical-textual-encoding"><span class="nav-number">3.1.</span> <span class="nav-text">Hierarchical Textual Encoding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#semantic-role-graph-structure"><span class="nav-number">3.1.1.</span> <span class="nav-text">Semantic Role Graph Structure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#initial-graph-node-representation"><span class="nav-number">3.1.2.</span> <span class="nav-text">Initial Graph Node Representation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchical-video-encoding"><span class="nav-number">3.2.</span> <span class="nav-text">Hierarchical Video Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#video-text-matching"><span class="nav-number">3.3.</span> <span class="nav-text">Video-Text Matching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image-text-matching."><span class="nav-number">4.1.</span> <span class="nav-text">Image-Text Matching.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#video-text-matching-1"><span class="nav-number">4.2.</span> <span class="nav-text">Video-Text Matching</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#graph-based-reasoning"><span class="nav-number">4.3.</span> <span class="nav-text">Graph-based Reasoning</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%AF%8D"><span class="nav-number">5.</span> <span class="nav-text">单词</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wddxrw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/10/Fine-grained-Video-Text-Retrieval-with-Hierarchical-Graph-Reasoning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Fine-grained Video-Text Retrieval with Hierarchical Graph Reasoning
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-03-10 08:08:37 / Modified: 11:39:02" itemprop="dateCreated datePublished" datetime="2021-03-10T08:08:37+08:00">2021-03-10</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="摘要">摘要</h2>
+<p>通过学习联合嵌入空间来度量跨模态相似度的方法，不能很好的表示诸如：场景、目标、动作及其构成等，复杂的视觉和文本细节。本文提出 HGR （Hierarchical Graph Reasoning，分层图推理）模型。HGR 将图像-文本匹配分解为从全局到局部的多个层次（global-to-local levels）。具体来讲，HGR 将文本结构成层次化语义图，包括：事件（events）、动作（action）、实体（entities）以及各层间的关系。基于注意力机制的图推理被用来生成分层文本嵌入，从而指导学习各种不同层次的视频学习。</p>
+<span id="more"></span>
+<h2 id="简介">简介</h2>
+<p>keyword-based video retrieval → cross-modal video-text retrieval (①global vectors, ②sequential representations)</p>
+<p>不管是全局向量还是序列化表示，都依然没有发挥出句子能够表达出结构化语义的优势。</p>
+<p><img src="/images/image-20210310090827848.png" alt="image-20210310090827848" style="zoom: 40%;" /></p>
+<ul>
+<li>多层角色语义图</li>
+<li>基于注意力机制的图推理</li>
+<li>从相似句子中选定给出视频的正确匹配</li>
+<li>更喜欢完整的描述，而不是正确但不完整的描述</li>
+</ul>
+<h2 id="方法">方法</h2>
+<figure>
+<img src="/images/image-20210310104929669.png" alt="" /><figcaption>image-20210310104929669</figcaption>
+</figure>
+<h3 id="hierarchical-textual-encoding">Hierarchical Textual Encoding</h3>
+<p>global-to-local 结构非常适合视频描述的语义理解。</p>
+<h4 id="semantic-role-graph-structure">Semantic Role Graph Structure</h4>
+<p>通过 <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1904.05255.pdf">Simple BERT Models for Relation Extraction and Semantic Role Labeling</a> 提供的 <a target="_blank" rel="noopener" href="https://github.com/Impavidity/relogic">方法</a> 构建语义角色图结构 (SRGS)。</p>
+<h4 id="initial-graph-node-representation">Initial Graph Node Representation</h4>
+<p>将 SRGS 中的每个节点初始化为一个向量。</p>
+<p>对于 event 节点，使用 Bi-LSTM + attention mechanism 将节点初始化为向量 <span class="math inline">\(g_{e}\)</span></p>
+<p><img src="/images/image-20210310112709729.png" alt="image-20210310112709729" style="zoom:50%;" /></p>
+<p><img src="/images/image-20210310112930425.png" alt="image-20210310112930425" style="zoom:50%;" /></p>
+<p>对于 action 和 entity 使用 Bi-LSTM + max pooling 得到向量组 <span class="math inline">\(g_{a} = \{g_{a,1},...,g_{a,N_{a}}\}\)</span> 和 <span class="math inline">\(g_{o} = \{g_{o,1},...,g_{o,N_{o}}\}\)</span>, <span class="math inline">\(N_{a} N_{o}\)</span> 分别表示 action 和 entity 节点的数量</p>
+<h3 id="hierarchical-video-encoding">Hierarchical Video Encoding</h3>
+<h3 id="video-text-matching">Video-Text Matching</h3>
+<h2 id="相关工作">相关工作</h2>
+<h3 id="image-text-matching.">Image-Text Matching.</h3>
+<p><a target="_blank" rel="noopener" href="https://research.google/pubs/pub41869/">DeViSE: A Deep Visual-Semantic Embedding Model.</a> first joint embedding framework + contrastive ranking loss（对比排名损失）</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1411.2539">Unifying Visual-Semantic Embeddings with Multimodal Neural Language Models.</a> CNN + RNN encoder-decoder</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.05612">Vse++: Improving visual-semantic embeddings with hard negatives</a>. global representations</p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2018/html/Huang_Learning_Semantic_Concepts_CVPR_2018_paper.html">Learning Semantic Concepts and Order for Image and Sentence Matching.</a></p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2018/html/Gu_Look_Imagine_and_CVPR_2018_paper.html">Look, Imagine and Match: Improving Textual-Visual Cross-Modal Retrieval With Generative Models.</a></p>
+<p>固定维度向量难以表示复杂语义</p>
+<hr />
+<p><a target="_blank" rel="noopener" href="https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Karpathy_Deep_Visual-Semantic_Alignments_2015_CVPR_paper.html">Deep visual-semantic alignments for generating image descriptions.</a> decompose + maximum alignment</p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_ECCV_2018/html/Kuang-Huei_Lee_Stacked_Cross_Attention_ECCV_2018_paper.html">Stacked cross attention for image-text matching.</a></p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2019/papers/Wu_Unified_Visual-Semantic_Embeddings_Bridging_Vision_and_Language_With_Structured_Meaning_CVPR_2019_paper.pdf">Unified visual-semantic embeddings: Bridging vision and language with structured meaning representations.</a></p>
+<h3 id="video-text-matching-1">Video-Text Matching</h3>
+<p>与 Image-Text Matching 主要不同就是视频的模态更加丰富</p>
+<p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3206025.3206064">Learning joint embedding with multimodal cues for cross-modal video-text retrieval.</a></p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1907.13487">Use What You Have: Video Retrieval Using Representations From Collaborative Experts.</a></p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2019/html/Dong_Dual_Encoding_for_Zero-Example_Video_Retrieval_CVPR_2019_paper.html">Dual Encoding for Zero-Example Video Retrieval.</a> mean pooling + biGRU + CNN</p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_ECCV_2018/html/Youngjae_Yu_A_Joint_Sequence_ECCV_2018_paper.html">A joint sequence fusion model for video question answering and retrieval.</a></p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_CVPR_2019/papers/Song_Polysemous_Visual-Semantic_Embedding_for_Cross-Modal_Retrieval_CVPR_2019_paper.pdf">Polysemous visual-semantic embedding for cross-modal retrieval.</a></p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_ICCV_2019/papers/Wray_Fine-Grained_Action_Retrieval_Through_Multiple_Parts-of-Speech_Embeddings_ICCV_2019_paper.pdf">Fine-grained action retrieval through multiple parts-of-speech embeddings.</a> 和本文超级像</p>
+<h3 id="graph-based-reasoning">Graph-based Reasoning</h3>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1609.02907.pdf">Semi-supervised classification with graph convolutional networks.</a> GCN</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1710.10903.pdf">Graph attention networks.</a></p>
+<p><a target="_blank" rel="noopener" href="https://link.springer.com/chapter/10.1007/978-3-319-93417-4_38">Modeling Relational Data with Graph Convolutional Networks</a> relational GCN</p>
+<p>基于图推理的方法被应用与目标检测、场景生成、视觉对话等多个领域</p>
+<h2 id="单词">单词</h2>
+<p>Fine-grained adj. 有细密纹理的</p>
+<p>insufficient adj. 不足的,不够的</p>
+<p>disentangles vt. 解开…的结,从(乱麻、纠葛中)解脱出来</p>
+<p>manually adv. 用手地;手工地</p>
+<p>facilitate vt. 使便利, 减轻…的困难</p>
+<p>consistent adj. 一贯的, 始终如一的</p>
+<p>off-the-shelf adj. 现成的;买来不用改就用的</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag"># 论文阅读</a>
+              <a href="/tags/%E8%B7%A8%E6%A8%A1%E6%80%81%E6%A3%80%E7%B4%A2/" rel="tag"># 跨模态检索</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/09/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/" rel="prev" title="进程间通信方式">
+                  <i class="fa fa-chevron-left"></i> 进程间通信方式
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wddxrw</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.8.5/dist/algoliasearch-lite.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.15.0/dist/instantsearch.production.min.js"></script><script src="/js/algolia-search.js"></script>
+
+
+
+<script>
+if (document.querySelectorAll('.pdf-container').length) {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/pdfobject@2.2.4/pdfobject.min.js', () => {
+    document.querySelectorAll('.pdf-container').forEach(element => {
+      PDFObject.embed(element.dataset.target, element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height   : element.dataset.height
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+  
+
+
+
+
+  
+
+
+</body>
+</html>
