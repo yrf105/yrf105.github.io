@@ -30,17 +30,17 @@
 <meta property="og:site_name" content="wddxrw&#39;s blog">
 <meta property="og:description" content="摘要 通过学习联合嵌入空间来度量跨模态相似度的方法，不能很好的表示诸如：场景、目标、动作及其构成等，复杂的视觉和文本细节。本文提出 HGR （Hierarchical Graph Reasoning，分层图推理）模型。HGR 将图像-文本匹配分解为从全局到局部的多个层次（global-to-local levels）。具体来讲，HGR 将文本结构成层次化语义图，包括：事件（events）、动作（">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/images/image-20210310090827848.png">
-<meta property="og:image" content="http://example.com/images/image-20210310104929669.png">
-<meta property="og:image" content="http://example.com/images/image-20210310112709729.png">
-<meta property="og:image" content="http://example.com/images/image-20210310112930425.png">
+<meta property="og:image" content="http://example.com/2021/03/10/images/image-20210310090827848.png">
+<meta property="og:image" content="http://example.com/2021/03/10/images/image-20210310104929669.png">
+<meta property="og:image" content="http://example.com/2021/03/10/images/image-20210310112709729.png">
+<meta property="og:image" content="http://example.com/2021/03/10/images/image-20210310112930425.png">
 <meta property="article:published_time" content="2021-03-10T00:08:37.000Z">
-<meta property="article:modified_time" content="2021-03-10T12:42:20.455Z">
+<meta property="article:modified_time" content="2021-03-11T03:26:45.355Z">
 <meta property="article:author" content="wddxrw">
 <meta property="article:tag" content="论文阅读">
 <meta property="article:tag" content="跨模态检索">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/image-20210310090827848.png">
+<meta name="twitter:image" content="http://example.com/2021/03/10/images/image-20210310090827848.png">
 
 
 <link rel="canonical" href="http://example.com/2021/03/10/Fine-grained-Video-Text-Retrieval-with-Hierarchical-Graph-Reasoning/">
@@ -187,7 +187,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchical-textual-encoding"><span class="nav-number">3.1.</span> <span class="nav-text">Hierarchical Textual Encoding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#semantic-role-graph-structure"><span class="nav-number">3.1.1.</span> <span class="nav-text">Semantic Role Graph Structure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#initial-graph-node-representation"><span class="nav-number">3.1.2.</span> <span class="nav-text">Initial Graph Node Representation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchical-video-encoding"><span class="nav-number">3.2.</span> <span class="nav-text">Hierarchical Video Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#video-text-matching"><span class="nav-number">3.3.</span> <span class="nav-text">Video-Text Matching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image-text-matching."><span class="nav-number">4.1.</span> <span class="nav-text">Image-Text Matching.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#video-text-matching-1"><span class="nav-number">4.2.</span> <span class="nav-text">Video-Text Matching</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#graph-based-reasoning"><span class="nav-number">4.3.</span> <span class="nav-text">Graph-based Reasoning</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%AF%8D"><span class="nav-number">5.</span> <span class="nav-text">单词</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchical-textual-encoding"><span class="nav-number">3.1.</span> <span class="nav-text">Hierarchical Textual Encoding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#semantic-role-graph-structure"><span class="nav-number">3.1.1.</span> <span class="nav-text">Semantic Role Graph Structure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#initial-graph-node-representation"><span class="nav-number">3.1.2.</span> <span class="nav-text">Initial Graph Node Representation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attention-based-graph-reasoning"><span class="nav-number">3.1.3.</span> <span class="nav-text">Attention-based Graph Reasoning</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hierarchical-video-encoding"><span class="nav-number">3.2.</span> <span class="nav-text">Hierarchical Video Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#video-text-matching"><span class="nav-number">3.3.</span> <span class="nav-text">Video-Text Matching</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#global-matching"><span class="nav-number">3.3.1.</span> <span class="nav-text">Global Matching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#local-attention-matching"><span class="nav-number">3.3.2.</span> <span class="nav-text">Local Attention Matching</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training-and-inference"><span class="nav-number">3.4.</span> <span class="nav-text">Training and Inference</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">5.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#image-text-matching."><span class="nav-number">5.1.</span> <span class="nav-text">Image-Text Matching.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#video-text-matching-1"><span class="nav-number">5.2.</span> <span class="nav-text">Video-Text Matching</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#graph-based-reasoning"><span class="nav-number">5.3.</span> <span class="nav-text">Graph-based Reasoning</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%AF%8D"><span class="nav-number">6.</span> <span class="nav-text">单词</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -268,10 +268,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-03-10 08:08:37 / Modified: 20:42:20" itemprop="dateCreated datePublished" datetime="2021-03-10T08:08:37+08:00">2021-03-10</time>
+      <time title="Created: 2021-03-10 08:08:37" itemprop="dateCreated datePublished" datetime="2021-03-10T08:08:37+08:00">2021-03-10</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-03-11 11:26:45" itemprop="dateModified" datetime="2021-03-11T11:26:45+08:00">2021-03-11</time>
+      </span>
 
   
 </div>
@@ -289,7 +295,7 @@
 <h2 id="简介">简介</h2>
 <p>keyword-based video retrieval → cross-modal video-text retrieval (①global vectors, ②sequential representations)</p>
 <p>不管是全局向量还是序列化表示，都依然没有发挥出句子能够表达出结构化语义的优势。</p>
-<p><img src="/images/image-20210310090827848.png" alt="image-20210310090827848" style="zoom: 40%;" /></p>
+<p><img src="../images/image-20210310090827848.png" alt="image-20210310090827848" style="zoom: 40%;" /></p>
 <ul>
 <li>多层角色语义图</li>
 <li>基于注意力机制的图推理</li>
@@ -298,7 +304,7 @@
 </ul>
 <h2 id="方法">方法</h2>
 <figure>
-<img src="/images/image-20210310104929669.png" alt="" /><figcaption>image-20210310104929669</figcaption>
+<img src="../images/image-20210310104929669.png" alt="" /><figcaption>image-20210310104929669</figcaption>
 </figure>
 <h3 id="hierarchical-textual-encoding">Hierarchical Textual Encoding</h3>
 <p>global-to-local 结构非常适合视频描述的语义理解。</p>
@@ -306,12 +312,66 @@
 <p>通过 <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1904.05255.pdf">Simple BERT Models for Relation Extraction and Semantic Role Labeling</a> 提供的 <a target="_blank" rel="noopener" href="https://github.com/Impavidity/relogic">方法</a> 构建语义角色图结构 (SRGS)。</p>
 <h4 id="initial-graph-node-representation">Initial Graph Node Representation</h4>
 <p>将 SRGS 中的每个节点初始化为一个向量。</p>
+<p>每一个视频描述 <span class="math inline">\(C\)</span> 由 <span class="math inline">\(N\)</span> 个单词组成 <span class="math inline">\(\{c_1, \cdots, c_N\}\)</span></p>
 <p>对于 event 节点，使用 Bi-LSTM + attention mechanism 将节点初始化为向量 <span class="math inline">\(g_{e}\)</span></p>
-<p><img src="/images/image-20210310112709729.png" alt="image-20210310112709729" style="zoom:50%;" /></p>
-<p><img src="/images/image-20210310112930425.png" alt="image-20210310112930425" style="zoom:50%;" /></p>
+<p><img src="../images/image-20210310112709729.png" alt="image-20210310112709729" style="zoom:50%;" /></p>
+<p><img src="../images/image-20210310112930425.png" alt="image-20210310112930425" style="zoom:50%;" /></p>
 <p>对于 action 和 entity 使用 Bi-LSTM + max pooling 得到向量组 <span class="math inline">\(g_{a} = \{g_{a,1},...,g_{a,N_{a}}\}\)</span> 和 <span class="math inline">\(g_{o} = \{g_{o,1},...,g_{o,N_{o}}\}\)</span>, <span class="math inline">\(N_{a} N_{o}\)</span> 分别表示 action 和 entity 节点的数量</p>
+<h4 id="attention-based-graph-reasoning">Attention-based Graph Reasoning</h4>
+<p>简单使用 relational GCN 会导致参数暴增，效率低且可能过拟合。</p>
+<p>本文方法： <span class="math display">\[
+g_i^0 = g_i \odot W_r r_{ij} \tag{6}
+\]</span> <span class="math inline">\(g_i \in \{g_e, g_a, g_o\}\)</span> ，<span class="math inline">\(g_i \in \mathbb{R}^{D \times 1}\)</span></p>
+<p><span class="math inline">\(W_r \in \mathbb{R}^{D \times K}\)</span> 角色嵌入矩阵（每个节点独享）， <span class="math inline">\(D\)</span> 是节点的维度，<span class="math inline">\(K\)</span> 是节点的个数</p>
+<p><span class="math inline">\(g_i^0 \in \mathbb{R}^{D \times 1}\)</span> GCN 的输入，<span class="math inline">\(g_i^l\)</span> GCN 第 <span class="math inline">\(l\)</span> 层节点 <span class="math inline">\(i\)</span> 的输出</p>
+<p><span class="math inline">\(r_{ij} \in \mathbb{R}^{K \times 1}\)</span> one-hot 向量，节点 <span class="math inline">\(i\)</span> 和节点 <span class="math inline">\(j\)</span> 之间的角色语义关系</p>
+<p><span class="math inline">\(\odot\)</span> 带广播的逐元素相乘</p>
+<hr />
+<p>使用 a graph attention network ，通过选择来自相邻节点的相关内容，来增强节点表示 <span class="math display">\[
+\tilde{\beta_{ij}} = (W_a^q g_i^l)^T(W_a^k g_i^l) / \sqrt{D} \tag{7}
+\]</span></p>
+<p><span class="math display">\[
+\beta_{ij} = \frac{exp(\tilde{\beta_{ij}})}{\sum_{j \in N_i}exp(\tilde{\beta_{ij}})} \tag{8}
+\]</span></p>
+<p><span class="math inline">\(N_i\)</span> 节点 <span class="math inline">\(i\)</span> 的邻居节点</p>
+<p><span class="math inline">\(W_a^q,W_a^k\)</span> 计算图注意力的参数 <span class="math display">\[
+g_i^{l + 1} = g_i^l + W_t^{l +1} \sum_{j \in N_i}(\beta_{ij}g_j^l) \tag{9}
+\]</span> <span class="math inline">\(W_t \in \mathbb{R}^{D \times D}\)</span> 通用转换矩阵，为所有关系类型共享</p>
+<hr />
+<p>将 GCN 第 <span class="math inline">\(L\)</span> 层的输出作为最终的层次化文本表示，<span class="math inline">\(c_e\)</span> 事件节点，<span class="math inline">\(c_a\)</span> 动作节点，<span class="math inline">\(c_o\)</span> 实体节点</p>
+<p>这样将参数数量从 <span class="math inline">\(L \times K \times D \times D\)</span> 降为 <span class="math inline">\(L \times D \times D + K \times D\)</span></p>
 <h3 id="hierarchical-video-encoding">Hierarchical Video Encoding</h3>
+<p>视频采用三层独立嵌入。</p>
+<p>给定视频 <span class="math inline">\(V\)</span> 由 <span class="math inline">\(\{f_1, \cdots, f_m\}\)</span> 组成 <span class="math display">\[
+v_{x, i} = W_x^v f_i,\qquad x \in \{e,a,o\} \tag{11}
+\]</span> 采用和 Eq(4) 相似的方法获得视频中的主要事件表示向量 <span class="math inline">\(v_e\)</span></p>
+<p>对于 action ，<span class="math inline">\(v_a = \{v_{a,1}, \cdots, v_{a,M}\}\)</span> ，对于 entity，<span class="math inline">\(v_o = \{ v_{o,1}, \cdots, v_{o, M} \}\)</span> ，他们都是一系列逐帧的特征。这些特征只会与和他们在相同层次的文本特征进行匹配。</p>
 <h3 id="video-text-matching">Video-Text Matching</h3>
+<p>通过汇总三个层级的结果得到整体的跨模态相似度。</p>
+<h4 id="global-matching">Global Matching</h4>
+<p><span class="math inline">\(s_e = \cos(v_e,c_e) \equiv \frac{v^Tc}{\Vert v \Vert \Vert c \Vert}\)</span></p>
+<h4 id="local-attention-matching">Local Attention Matching</h4>
+<p><span class="math inline">\(s_{ij}^x = \cos(v_{x,j}, c_{x,i}) \qquad x \in \{a,o\}\)</span> 这样的局部相似度隐含了对齐。但是缺乏适当的归一化。使用 <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1803.08024.pdf">stacked attention</a> 归一化： <span class="math display">\[
+\varphi_{ij}^x = softmax(\lambda([s_{ij}^x]_+ / \sqrt{\sum_j [s_{ij}^x]_+^2})) \tag{12}
+\]</span></p>
+<p><span class="math display">\[
+[\cdot]_+ \equiv max(\cdot,0)
+\]</span></p>
+<p><span class="math display">\[
+s_{x,i} = \sum_j \varphi_{ij}^x s_{ij}^x
+\]</span></p>
+<p><span class="math display">\[
+s_x = \sum_i s_{x,i}
+\]</span></p>
+<hr />
+<h3 id="training-and-inference">Training and Inference</h3>
+<p>最终的视频-文本相似度为 <span class="math display">\[
+s(v,c) = (s_e + s_a + s_o) / 3 \tag{13}
+\]</span> 使用对比排名损失（<a target="_blank" rel="noopener" href="https://blog.csdn.net/LoseInVain/article/details/103995962">contrastive ranking loss</a>）训练模型 <span class="math display">\[
+L(v^+, c^+) = [\Delta + s(v^+,c^-) - s(v^+, c^+)]_+ \\ \qquad\qquad\quad+ [\Delta + s(v^-,c^+) - s(v^+, c^+)]_+ \tag{14}
+\]</span> https://gombru.github.io/2019/04/03/ranking_loss/</p>
+<h2 id="实验">实验</h2>
+<p>https://github.com/cshizhe/hgr_v2t</p>
 <h2 id="相关工作">相关工作</h2>
 <h3 id="image-text-matching.">Image-Text Matching.</h3>
 <p><a target="_blank" rel="noopener" href="https://research.google/pubs/pub41869/">DeViSE: A Deep Visual-Semantic Embedding Model.</a> first joint embedding framework + contrastive ranking loss（对比排名损失）</p>
@@ -345,6 +405,8 @@
 <p>facilitate vt. 使便利, 减轻…的困难</p>
 <p>consistent adj. 一贯的, 始终如一的</p>
 <p>off-the-shelf adj. 现成的;买来不用改就用的</p>
+<p>ambiguity n. 歧义;意义不明确</p>
+<p>factorize v. 分解为因数,第三债务人</p>
 
     </div>
 
