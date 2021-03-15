@@ -189,12 +189,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -223,6 +223,113 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/15/SQL%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/03/15/SQL%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/" class="post-title-link" itemprop="url">SQL命令速查</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-03-15 21:27:48 / Modified: 22:31:29" itemprop="dateCreated datePublished" datetime="2021-03-15T21:27:48+08:00">2021-03-15</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="where">WHERE</h2>
+<p>提取满足指定条件的记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name,column_name</span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line"><span class="keyword">WHERE</span> column_name operator <span class="keyword">value</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>operator: =, &gt;, &lt;, &gt;= , &lt;=, !=, &lt;&gt; 表示（不等于），可使用 not, and, or 连接</li>
+<li>is null: 判空</li>
+<li>between A and B: [A, B] 之间的值</li>
+<li>in (a, b, c): 等于 a 或 b 或 c 的值</li>
+<li>like 模糊查询
+<ul>
+<li><strong>%</strong> 表示多个字值，**_** 下划线表示一个字符</li>
+<li><strong>M%</strong> : 查询以 M 开头的内容</li>
+<li><strong>%M%</strong> : 查询包含 M 的所有内容</li>
+<li><strong>%M_</strong> : 查询 M 在倒数第二位的所有内容</li>
+</ul></li>
+</ul>
+<h2 id="order-by">ORDER BY</h2>
+<p>对结果集进行排序</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name,column_name</span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> column_name,column_name <span class="keyword">ASC</span><span class="operator">|</span><span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>默认升序</li>
+</ul>
+<h2 id="limit">LIMIT</h2>
+<p>限制 SELECT 返回的数据数量</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column1, column2, columnN </span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line">LIMIT [<span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> column1, column2, columnN </span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line">LIMIT [<span class="type">row</span> num, <span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span>] # 从第 <span class="type">row</span> num 行开始提取 <span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span> 行</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> column1, column2, columnN </span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line">LIMIT [<span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span>] <span class="keyword">OFFSET</span> [<span class="type">row</span> num] # 从第 <span class="type">row</span> num 行开始提取 <span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span> 行</span><br></pre></td></tr></table></figure>
+<h2 id="join">JOIN</h2>
+<figure>
+<img src="../images/sql-join.png" alt="" /><figcaption>img</figcaption>
+</figure>
+<ul>
+<li><strong>INNER JOIN</strong>：如果表中有至少一个匹配，则返回行</li>
+<li><strong>LEFT JOIN</strong>：即使右表中没有匹配，也从左表返回所有的行</li>
+<li><strong>RIGHT JOIN</strong>：即使左表中没有匹配，也从右表返回所有的行</li>
+<li><strong>FULL JOIN</strong>：只要其中一个表中存在匹配，则返回行</li>
+<li>通过 A.colname 可以访问到 A 表里的 colname 列</li>
+</ul>
+<h2 id="函数">函数</h2>
+<h2 id="max">MAX()</h2>
+<p>返回指定列的最大值</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">MAX</span>(column_name) <span class="keyword">FROM</span> table_name;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>有多个最大值会返回多个最大值</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -838,7 +945,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-03-13 10:00:10" itemprop="dateModified" datetime="2021-03-13T10:00:10+08:00">2021-03-13</time>
+        <time title="Modified: 2021-03-15 12:59:30" itemprop="dateModified" datetime="2021-03-15T12:59:30+08:00">2021-03-15</time>
       </span>
 
   
@@ -856,78 +963,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/03/10/Fine-grained-Video-Text-Retrieval-with-Hierarchical-Graph-Reasoning/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/09/CMakeLists-txt%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E2%80%94%E2%80%94C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wddxrw">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wddxrw's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/09/CMakeLists-txt%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E2%80%94%E2%80%94C/" class="post-title-link" itemprop="url">CMakeLists.txt基本结构 —— C++</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2021-03-09 18:04:26 / Modified: 19:45:40" itemprop="dateCreated datePublished" datetime="2021-03-09T18:04:26+08:00">2021-03-09</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>CMakeLists.txt</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/03/09/CMakeLists-txt%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E2%80%94%E2%80%94C/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>

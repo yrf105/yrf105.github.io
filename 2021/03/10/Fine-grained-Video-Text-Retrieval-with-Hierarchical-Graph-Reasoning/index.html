@@ -35,7 +35,7 @@
 <meta property="og:image" content="http://example.com/2021/03/10/images/image-20210310112709729.png">
 <meta property="og:image" content="http://example.com/2021/03/10/images/image-20210310112930425.png">
 <meta property="article:published_time" content="2021-03-10T00:08:37.000Z">
-<meta property="article:modified_time" content="2021-03-13T02:00:10.231Z">
+<meta property="article:modified_time" content="2021-03-15T04:59:30.867Z">
 <meta property="article:author" content="wddxrw">
 <meta property="article:tag" content="论文阅读">
 <meta property="article:tag" content="跨模态检索">
@@ -201,12 +201,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -276,7 +276,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-03-13 10:00:10" itemprop="dateModified" datetime="2021-03-13T10:00:10+08:00">2021-03-13</time>
+        <time title="Modified: 2021-03-15 12:59:30" itemprop="dateModified" datetime="2021-03-15T12:59:30+08:00">2021-03-15</time>
       </span>
 
   
@@ -422,10 +422,106 @@ L(v^+, c^+) = [\Delta + s(v^+,c^-) - s(v^+, c^+)]_+ \\ \qquad\qquad\quad+ [\Delt
 <h4 id="语义图构建">语义图构建</h4>
 <p>数据集中作者已经提供了语义图，若需要对新的数据集进行语义图构建：</p>
 <ol type="1">
-<li><p>标记语义角色</p>
-<p><code>python misc/semantic_role_labeling.py ref_caption_file out_file --cuda_device 0</code></p></li>
+<li><p>标记角色语义</p>
+<p><code>python misc/semantic_role_labeling.py ref_caption_file out_file --cuda_device 0</code></p>
+<p><a target="_blank" rel="noopener" href="https://demo.allennlp.org/semantic-role-labeling">安装 AllenNLP 提供的 Bert 来实现 semantic-role-labeling</a>，如遇到问题基本是 q 的问题。</p>
+<details>
+<summary>
+<p>demo</p>
+</summary>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> allennlp.predictors.predictor <span class="keyword">import</span> Predictor</span><br><span class="line"><span class="keyword">import</span> allennlp_models.tagging</span><br><span class="line">print(<span class="string">&#x27;start&#x27;</span>)</span><br><span class="line"><span class="comment"># 这个是 论文 使用的模型</span></span><br><span class="line"><span class="comment"># predictor = Predictor.from_path(</span></span><br><span class="line"><span class="comment">#     &quot;https://s3-us-west-2.amazonaws.com/allennlp/models/bert-base-srl-2019.06.17.tar.gz&quot;)</span></span><br><span class="line"><span class="comment"># 这个是官网 demo 的模型</span></span><br><span class="line">predictor = Predictor.from_path(<span class="string">&quot;structured-prediction-srl-bert.2020.12.15.tar.gz&quot;</span>)</span><br><span class="line">result = predictor.predict(</span><br><span class="line">    sentence=<span class="string">&quot;Did Uriah honestly think he could beat the game in under three hours?.&quot;</span></span><br><span class="line">)</span><br><span class="line">print(result)</span><br><span class="line">print(<span class="string">&#x27;end&#x27;</span>)</span><br></pre></td></tr></table></figure>
+</details>
+<details>
+<summary>
+<p>demo 的输出</p>
+</summary>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;verbs&quot;</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;[V: Did] Uriah honestly think he could beat the game in under three hours ? .&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;B-V&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;verb&quot;</span>: <span class="string">&quot;Did&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Did [ARG0: Uriah] [ARGM-ADV: honestly] [V: think] [ARG1: he could beat the game in under three hours] ? .&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARG0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARGM-ADV&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-V&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;verb&quot;</span>: <span class="string">&quot;think&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Did Uriah honestly think he [V: could] beat the game in under three hours ? .&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-V&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;verb&quot;</span>: <span class="string">&quot;could&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Did Uriah honestly think [ARG0: he] [ARGM-MOD: could] [V: beat] [ARG1: the game] [ARGM-TMP: in under three hours] ? .&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARG0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARGM-MOD&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-V&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARGM-TMP&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARGM-TMP&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARGM-TMP&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARGM-TMP&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;verb&quot;</span>: <span class="string">&quot;beat&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">&quot;words&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;Did&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Uriah&quot;</span>,</span><br><span class="line">    <span class="string">&quot;honestly&quot;</span>,</span><br><span class="line">    <span class="string">&quot;think&quot;</span>,</span><br><span class="line">    <span class="string">&quot;he&quot;</span>,</span><br><span class="line">    <span class="string">&quot;could&quot;</span>,</span><br><span class="line">    <span class="string">&quot;beat&quot;</span>,</span><br><span class="line">    <span class="string">&quot;the&quot;</span>,</span><br><span class="line">    <span class="string">&quot;game&quot;</span>,</span><br><span class="line">    <span class="string">&quot;in&quot;</span>,</span><br><span class="line">    <span class="string">&quot;under&quot;</span>,</span><br><span class="line">    <span class="string">&quot;three&quot;</span>,</span><br><span class="line">    <span class="string">&quot;hours&quot;</span>,</span><br><span class="line">    <span class="string">&quot;?&quot;</span>,</span><br><span class="line">    <span class="string">&quot;.&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</details>
+<table>
+<thead>
+<tr class="header">
+<th>标签</th>
+<th>含义</th>
+<th>标签</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Arg0</td>
+<td>causer of increase（施事）</td>
+<td>ArgM-TMP</td>
+<td>时间</td>
+</tr>
+<tr class="even">
+<td>Arg1</td>
+<td>thing increasing （受事）</td>
+<td>ArgM-DIR</td>
+<td>方向</td>
+</tr>
+<tr class="odd">
+<td>Arg2</td>
+<td>amount increased by, EXT, or MNR（范围）</td>
+<td>ArgM-DIS</td>
+<td>标记语</td>
+</tr>
+<tr class="even">
+<td>Arg3</td>
+<td>start point（动作开始）</td>
+<td>ArgM-DGR</td>
+<td>程度</td>
+</tr>
+<tr class="odd">
+<td>Arg4</td>
+<td>end point（动作结束）</td>
+<td>ArgM-EXT</td>
+<td>范围</td>
+</tr>
+<tr class="even">
+<td>Arg5</td>
+<td>其他动词相关</td>
+<td>ArgM-FRQ</td>
+<td>频率</td>
+</tr>
+<tr class="odd">
+<td>ArgM-ADV</td>
+<td>状语</td>
+<td>ArgM-LOC</td>
+<td>地点</td>
+</tr>
+<tr class="even">
+<td>ArgM-BNF</td>
+<td>受益人</td>
+<td>ArgM-MNR</td>
+<td>方式</td>
+</tr>
+<tr class="odd">
+<td>ArgM-CND</td>
+<td>条件</td>
+<td>ArgM-PRP</td>
+<td>目的</td>
+</tr>
+<tr class="even">
+<td>ArgM-TPC</td>
+<td>主题</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></li>
 <li><p>将句子转换为角色图</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd misc</span><br><span class="line">jupyter notebook</span><br><span class="line"><span class="comment"># open parse_sent_to_role_graph.ipynd</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd misc</span><br><span class="line">jupyter notebook</span><br><span class="line"><span class="comment"># open parse_sent_to_role_graph.ipynd</span></span><br></pre></td></tr></table></figure>
+<p>程序分为两个大部分，一是对存在角色语义标签的句子生成角色图，二是对不存在角色语义标签的句子生成角色图</p>
+<ul>
+<li>存在角色语义标签的句子就利用其角色语义标签生成角色图</li>
+<li>不存在角色语义标签的句子只需要使用 <a target="_blank" rel="noopener" href="https://spacy.io/">spacy</a> 简单提取动词和名词生成角色图（图中只有节点没有边）</li>
+</ul>
+<details>
+<summary>
+<p>最终结果</p>
+</summary>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">(&#123;&#x27;ROOT&#x27;: &#123;&#x27;words&#x27;: [&#x27;a&#x27;,</span><br><span class="line">    &#x27;egg&#x27;,</span><br><span class="line">    &#x27;has&#x27;,</span><br><span class="line">    &#x27;been&#x27;,</span><br><span class="line">    &#x27;broken&#x27;,</span><br><span class="line">    &#x27;and&#x27;,</span><br><span class="line">    &#x27;dropped&#x27;,</span><br><span class="line">    &#x27;into&#x27;,</span><br><span class="line">    &#x27;the&#x27;,</span><br><span class="line">    &#x27;cup&#x27;,</span><br><span class="line">    &#x27;and&#x27;,</span><br><span class="line">    &#x27;a&#x27;,</span><br><span class="line">    &#x27;water&#x27;,</span><br><span class="line">    &#x27;is&#x27;,</span><br><span class="line">    &#x27;boiling&#x27;,</span><br><span class="line">    &#x27;in&#x27;,</span><br><span class="line">    &#x27;the&#x27;,</span><br><span class="line">    &#x27;sauce&#x27;,</span><br><span class="line">    &#x27;pan&#x27;],</span><br><span class="line">   &#x27;spans&#x27;: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],</span><br><span class="line">   &#x27;role&#x27;: &#x27;ROOT&#x27;&#125;,</span><br><span class="line">  &#x27;1&#x27;: &#123;&#x27;role&#x27;: &#x27;V&#x27;, &#x27;spans&#x27;: [4], &#x27;words&#x27;: [&#x27;broken&#x27;]&#125;,</span><br><span class="line">  &#x27;2&#x27;: &#123;&#x27;role&#x27;: &#x27;ARG1&#x27;, &#x27;spans&#x27;: [0, 1], &#x27;words&#x27;: [&#x27;a&#x27;, &#x27;egg&#x27;]&#125;,</span><br><span class="line">  &#x27;3&#x27;: &#123;&#x27;role&#x27;: &#x27;V&#x27;, &#x27;spans&#x27;: [6], &#x27;words&#x27;: [&#x27;dropped&#x27;]&#125;,</span><br><span class="line">  &#x27;4&#x27;: &#123;&#x27;role&#x27;: &#x27;ARG4&#x27;, &#x27;spans&#x27;: [7, 8, 9], &#x27;words&#x27;: [&#x27;into&#x27;, &#x27;the&#x27;, &#x27;cup&#x27;]&#125;,</span><br><span class="line">  &#x27;5&#x27;: &#123;&#x27;role&#x27;: &#x27;V&#x27;, &#x27;spans&#x27;: [14], &#x27;words&#x27;: [&#x27;boiling&#x27;]&#125;,</span><br><span class="line">  &#x27;6&#x27;: &#123;&#x27;role&#x27;: &#x27;ARG1&#x27;, &#x27;spans&#x27;: [11, 12], &#x27;words&#x27;: [&#x27;a&#x27;, &#x27;water&#x27;]&#125;,</span><br><span class="line">  &#x27;7&#x27;: &#123;&#x27;role&#x27;: &#x27;ARGM-LOC&#x27;,</span><br><span class="line">   &#x27;spans&#x27;: [15, 16, 17, 18],</span><br><span class="line">   &#x27;words&#x27;: [&#x27;in&#x27;, &#x27;the&#x27;, &#x27;sauce&#x27;, &#x27;pan&#x27;]&#125;&#125;,</span><br><span class="line"> [(&#x27;<span class="number">1</span>&#x27;, &#x27;<span class="number">2</span>&#x27;, &#x27;ARG1&#x27;),</span><br><span class="line">  (&#x27;<span class="number">3</span>&#x27;, &#x27;<span class="number">2</span>&#x27;, &#x27;ARG1&#x27;),</span><br><span class="line">  (&#x27;<span class="number">3</span>&#x27;, &#x27;<span class="number">4</span>&#x27;, &#x27;ARG4&#x27;),</span><br><span class="line">  (&#x27;<span class="number">5</span>&#x27;, &#x27;<span class="number">6</span>&#x27;, &#x27;ARG1&#x27;),</span><br><span class="line">  (&#x27;5&#x27;, &#x27;7&#x27;, &#x27;ARGM-LOC&#x27;)])</span><br></pre></td></tr></table></figure>
+</details></li>
 </ol>
 <h4 id="训练和验证">训练和验证</h4>
 <ol type="1">
