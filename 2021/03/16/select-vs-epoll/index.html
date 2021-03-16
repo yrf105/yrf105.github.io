@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"algolia":{"appID":"JPGR7YFEVR","apiKey":"3edec261c571a17c4749395953253b04","indexName":"myblog","hits":{"per_page":10}}};
+  </script>
+<meta property="og:type" content="article">
+<meta property="og:title" content="select vs. epoll">
+<meta property="og:url" content="http://example.com/2021/03/16/select-vs-epoll/index.html">
+<meta property="og:site_name" content="wddxrw&#39;s blog">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/03/16/images/8644384737_833ea521ff_b.jpg">
+<meta property="article:published_time" content="2021-03-16T10:56:34.000Z">
+<meta property="article:modified_time" content="2021-03-16T14:45:10.528Z">
+<meta property="article:author" content="wddxrw">
+<meta property="article:tag" content="网络编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/16/images/8644384737_833ea521ff_b.jpg">
+
+
+<link rel="canonical" href="http://example.com/2021/03/16/select-vs-epoll/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<title>select vs. epoll | wddxrw's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">wddxrw's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#io-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">I&#x2F;O 多路复用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select"><span class="nav-number">2.</span> <span class="nav-text">SELECT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#epoll"><span class="nav-number">3.</span> <span class="nav-text">epoll</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wddxrw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/16/select-vs-epoll/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          select vs. epoll
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-03-16 18:56:34 / Modified: 22:45:10" itemprop="dateCreated datePublished" datetime="2021-03-16T18:56:34+08:00">2021-03-16</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><img src="../images/8644384737_833ea521ff_b.jpg" style="zoom: 50%;" /></p>
+<span id="more"></span>
+<h2 id="io-多路复用">I/O 多路复用</h2>
+<p>I/O 多路复用技术使得我们可以在一个进程或线程内实现对多个客户端的数据收发任务，从而避免了进程或线程频繁上下文切换对处理多客户端能力的影响。</p>
+<p>I/O 多路复用是操作系统提供的通知机制，当被监听的文件描述符上注册的事件发生时被阻塞的进程或线程就会被唤醒去执行读写操作。</p>
+<p>select 和 epoll 就是两种不同的 I/O 多路复用技术。</p>
+<p>使用它们的步骤有相似之处：</p>
+<ol type="1">
+<li>在文件描述上注册事件并加入监听</li>
+<li>调用监听函数阻塞监听文件描述符，当事件发生时监听函数返回发生事件的文件描述符</li>
+<li>对发生事件的文件描述符执行相应的操作。</li>
+</ol>
+<p>但是，它们又有许多不同之处。</p>
+<h2 id="select">SELECT</h2>
+<details>
+<summary>
+select 编写的回声服务端：
+</summary>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">define</span> BUFFER_SIZE 128</span></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (argc != <span class="number">3</span>) &#123;</span><br><span class="line">          <span class="built_in">printf</span>(<span class="string">&quot;Usage: %s &lt;ip&gt; &lt;port&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">          <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  	<span class="comment">// </span></span><br><span class="line">      <span class="keyword">const</span> <span class="keyword">char</span>* ip = argv[<span class="number">1</span>];</span><br><span class="line">      <span class="keyword">int</span> port = atoi(argv[<span class="number">2</span>]);</span><br><span class="line">      <span class="keyword">char</span> buffer[BUFFER_SIZE];</span><br><span class="line">  	<span class="comment">// </span></span><br><span class="line">      <span class="keyword">int</span> listenfd = socket(PF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">      assert(listenfd != <span class="number">-1</span>);</span><br><span class="line">  	<span class="comment">//</span></span><br><span class="line">      <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">server_addr</span>;</span></span><br><span class="line">      <span class="built_in">memset</span>(&amp;server_addr, <span class="number">0</span>, <span class="keyword">sizeof</span>(server_addr));</span><br><span class="line">      server_addr.sin_family = AF_INET;</span><br><span class="line">      inet_aton(ip, &amp;(server_addr.sin_addr));</span><br><span class="line">      server_addr.sin_port = htons(port);</span><br><span class="line">  	<span class="comment">//</span></span><br><span class="line">      <span class="keyword">int</span> ret = bind(listenfd, (struct sockaddr*)&amp;server_addr, <span class="keyword">sizeof</span>(server_addr));</span><br><span class="line">      assert(ret != <span class="number">-1</span>);</span><br><span class="line">  	<span class="comment">//</span></span><br><span class="line">      ret = listen(listenfd, <span class="number">5</span>);</span><br><span class="line">assert(ret != <span class="number">-1</span>);</span><br><span class="line">  	<span class="comment">//</span></span><br><span class="line">      fd_set readfds, readfds_cpy;</span><br><span class="line">      FD_ZERO(&amp;readfds);</span><br><span class="line">      FD_ZERO(&amp;readfds_cpy);</span><br><span class="line">      FD_SET(listenfd, &amp;readfds);</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">      timeval tv;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">      <span class="keyword">int</span> max_fd = listenfd;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">      <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">  		readfds_cpy = readfds;</span><br><span class="line">          tv.tv_sec = <span class="number">5</span>;</span><br><span class="line">          tv.tv_usec = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// 传入 select 的 readfds_cpy，tv 每次都会被修改，所以需要上面的</span></span><br><span class="line">  		<span class="comment">// 代码来保存副本或者赋新值</span></span><br><span class="line">          ret = select(max_fd + <span class="number">1</span>, &amp;readfds_cpy, <span class="literal">nullptr</span>, <span class="literal">nullptr</span>, &amp;tv);</span><br><span class="line">          assert(ret != <span class="number">-1</span>);</span><br><span class="line">  		<span class="comment">// 需要遍历每个文件描述符来判断注册的事件是否发生</span></span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> sockfd = <span class="number">0</span>; sockfd &lt;= max_fd; ++sockfd) &#123;</span><br><span class="line">              <span class="keyword">if</span> (!FD_ISSET(sockfd, &amp;readfds_cpy)) &#123;</span><br><span class="line">                  <span class="keyword">continue</span> ;</span><br><span class="line">              &#125;</span><br><span class="line">		<span class="comment">//</span></span><br><span class="line">              <span class="keyword">if</span> (sockfd == listenfd) &#123;</span><br><span class="line">                  <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">client_addr</span>;</span></span><br><span class="line">                  <span class="keyword">socklen_t</span> client_addr_len = <span class="keyword">sizeof</span>(client_addr);</span><br><span class="line">                  <span class="built_in">memset</span>(&amp;client_addr, <span class="number">0</span>, client_addr_len);</span><br><span class="line">			<span class="comment">//</span></span><br><span class="line">                  <span class="keyword">int</span> connfd = accept(sockfd, (struct sockaddr*)&amp;client_addr, &amp;client_addr_len);</span><br><span class="line">                  FD_SET(connfd, &amp;readfds);</span><br><span class="line">                  <span class="keyword">if</span> (connfd &gt; max_fd) &#123;</span><br><span class="line">                      max_fd = connfd;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                  ret = read(sockfd, buffer, BUFFER_SIZE - <span class="number">1</span>);</span><br><span class="line">                  <span class="keyword">if</span> (ret &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                      close(sockfd);</span><br><span class="line">                      FD_CLR(sockfd, &amp;readfds);</span><br><span class="line">                  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                      write(sockfd, buffer, <span class="built_in">strlen</span>(buffer));</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">      close(listenfd);</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</details>
+<p>select 存在的问题：</p>
+<ul>
+<li><p>传入 select 函数的文件描述符集合以及超时时间每轮循环都需要赋新值，将文件描述符集从内核态搬到用户态赋新值后在搬回内核态如此往复降低了效率</p></li>
+<li><p>为了找到是文件描述符集中哪个文件描述符的注册事件发生了需要遍历所有可能的文件描述符，相当于时间复杂度为 O(n)</p></li>
+<li><p>select 监听文件描述符的数量受到常量 __FD_SETSIZE 的限制</p>
+<details>
+<summary>
+<p>fd_set 的定义</p>
+</summary>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    __fd_mask fds_bits[__FD_SETSIZE / __NFDBITS];</span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> __FDS_BITS(set) ((set)-&gt;fds_bits)</span></span><br><span class="line">&#125; fd_set;</span><br><span class="line"><span class="comment">/* Number of descriptors that can fit in an `fd_set&#x27;.  */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __FD_SETSIZE		1024</span></span><br><span class="line"><span class="comment">/* It&#x27;s easier to assume 8-bit bytes than to get CHAR_BIT.  */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __NFDBITS	(8 * (int) sizeof (__fd_mask))</span></span><br><span class="line"><span class="comment">/* The fd_set member is required to be an array of longs.  */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> __fd_mask;</span><br></pre></td></tr></table></figure>
+</details></li>
+</ul>
+<h2 id="epoll">epoll</h2>
+<details>
+<summary>
+epoll 编写的回声服务端
+</summary>
+#include &lt;sys/types.h&gt; #include &lt;sys/socket.h&gt; #include &lt;netdb.h&gt; #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;unistd.h&gt; #include &lt;string.h&gt; #include &lt;assert.h&gt; #include &lt;time.h&gt; #include &lt;fcntl.h&gt; #include &lt;sys/epoll.h&gt; #include &lt;errno.h&gt; #define BUFFERSIZE 128 #define MAXEVENTS 64 // static int creat_and_bind (char* port) { struct addrinfo hints; struct addrinfo* result, <em>rp; // memset(&amp;hints, 0, sizeof(hints)); hints.ai_family = AF_UNSPEC; /</em> Allow IPv4 or IPv6 <em>/ hints.ai_socktype = SOCK_STREAM; /</em> Stream socket <em>/ hints.ai_flags = AI_PASSIVE; /</em> For wildcard(通配符) IP address <em>/ // int ret = getaddrinfo(NULL, port, &amp;hints, &amp;result); assert(ret != -1); // int sfd = -1; // for (rp = result; rp != NULL; rp = rp-&gt;ai_next) { sfd = socket(rp-&gt;ai_family, rp-&gt;ai_socktype, rp-&gt;ai_protocol); if (sfd == -1) { continue; } if (bind(sfd, rp-&gt;ai_addr, rp-&gt;ai_addrlen) == 0) { break; /</em> success */ } close(sfd); } // if (rp == NULL) { return -1; } // freeaddrinfo(result); // return sfd; } // static int make_socket_non_blocking(int sfd) { int flags = fcntl(sfd, F_GETFL, 0); if (flags == -1) { return -1; } flags |= O_NONBLOCK; int ret = fcntl(sfd, F_SETFL, flags); if (ret == -1) { return -1; } return 0; } // int main(int argc, char** argv) { // if (argc != 2) { printf("Usage: %s <port>", argv[0]); return -1; } // int sfd = creat_and_bind(argv[1]); assert(sfd != -1); // int ret = make_socket_non_blocking(sfd); assert(ret != -1); // ret = listen(sfd, SOMAXCONN); assert(ret != -1); // int efd = epoll_create1(0); assert(efd != -1); // struct epoll_event event; struct epoll_event* events; // event.data.fd = sfd; event.events = EPOLLET | EPOLLIN; // ret = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &amp;event); assert(ret != -1); // events = (struct epoll_event<em>)calloc(MAXEVENTS, sizeof(event)); // while (1) { int nfds = epoll_wait(efd, events, MAXEVENTS, 0); for (int i = 0; i &lt; nfds; ++i) { if (events[i].events &amp; EPOLLERR || events[i].events &amp; EPOLLHUP || (!events[i].events &amp; EPOLLIN)) { fprintf(stderr, "epoll error"); close(events[i].data.fd); continue; } else if (events[i].data.fd == sfd) { while (1) { struct sockaddr_in client_addr; socklen_t client_addr_len = sizeof(client_addr); memset(&amp;client_addr, 0, client_addr_len); int connfd = accept(sfd, (struct sockaddr</em>)&amp;client_addr, &amp;client_addr_len); if (connfd == -1) { if (errno == EAGAIN || errno == EWOULDBLOCK) { // 接收了所有连接 break; } else { perror("accept"); break; } } // ret = make_socket_non_blocking(connfd); assert(ret != -1); event.data.fd = connfd; event.events = EPOLLIN | EPOLLET; ret = epoll_ctl(efd, EPOLL_CTL_ADD, connfd, &amp;event); assert(ret != -1); } continue ; } else { while (1) { /* 这里需要循环读取直到 read 返回 -1 并且 errno 为 EAGAIN */ char buf[BUFFERSIZE]; int counts = read(events[i].data.fd, buf, BUFFERSIZE - 1); if (counts == -1) { if (errno != EAGAIN) { perror("read"); break; } break; } else if (counts == 0) { // close 文件描述符的同时会使得 epoll 移除对文件描述符的监听 close(events[i].data.fd); } else { buf[counts] = '\0'; ret = write(events[i].data.fd, buf, strlen(buf)); assert(ret != -1); } } } } } // free(events); close(efd); close(sfd); // return 0; }
+</details>
+<p>epoll 解决了 select 的所有问题，但也引入了新的问题：</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag"># 网络编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/15/SQL%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/" rel="prev" title="SQL命令速查">
+                  <i class="fa fa-chevron-left"></i> SQL命令速查
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wddxrw</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.8.5/dist/algoliasearch-lite.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.15.0/dist/instantsearch.production.min.js"></script><script src="/js/algolia-search.js"></script>
+
+
+
+<script>
+if (document.querySelectorAll('.pdf-container').length) {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/pdfobject@2.2.4/pdfobject.min.js', () => {
+    document.querySelectorAll('.pdf-container').forEach(element => {
+      PDFObject.embed(element.dataset.target, element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height   : element.dataset.height
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+  
+
+
+
+
+  
+
+
+</body>
+</html>
