@@ -30,7 +30,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2021/03/16/images/8644384737_833ea521ff_b.jpg">
 <meta property="article:published_time" content="2021-03-16T10:56:34.000Z">
-<meta property="article:modified_time" content="2021-03-17T12:48:44.365Z">
+<meta property="article:modified_time" content="2021-03-17T13:40:26.861Z">
 <meta property="article:author" content="wddxrw">
 <meta property="article:tag" content="网络编程">
 <meta name="twitter:card" content="summary">
@@ -195,7 +195,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -270,7 +270,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-03-17 20:48:44" itemprop="dateModified" datetime="2021-03-17T20:48:44+08:00">2021-03-17</time>
+        <time title="Modified: 2021-03-17 21:40:26" itemprop="dateModified" datetime="2021-03-17T21:40:26+08:00">2021-03-17</time>
       </span>
 
   
@@ -286,9 +286,9 @@
         <p><img src="../images/8644384737_833ea521ff_b.jpg" style="zoom: 50%;" /></p>
 <span id="more"></span>
 <h2 id="io-多路复用">I/O 多路复用</h2>
-<p>I/O 多路复用技术使得我们可以在一个进程或线程内实现对多个客户端的数据收发任务，从而避免了进程或线程频繁上下文切换对处理多客户端能力的影响。</p>
+<p>I/O 多路复用技术使得我们可以在一个进程或线程内实现对多个客户端的数据收发任务，从而避免了进程或线程频繁上下文切换对处理多客户端能力的影响（上下文切换是大头，创建进程以及复杂的 IPC 等也是问题）。</p>
 <p>I/O 多路复用是操作系统提供的通知机制，当被监听的文件描述符上注册的事件发生时被阻塞的进程或线程就会被唤醒去执行读写操作。</p>
-<p>select 和 epoll 就是两种不同的 I/O 多路复用技术。</p>
+<p>select 和 <code>epoll</code> 就是两种不同的 I/O 多路复用技术。</p>
 <p>使用它们的步骤有相似之处：</p>
 <ol type="1">
 <li>在文件描述上注册事件并加入监听</li>
@@ -353,6 +353,9 @@ epoll 编写的回声服务端
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2021/03/19/HGR-%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/" rel="next" title="HGR-源码解读">
+                  HGR-源码解读 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
