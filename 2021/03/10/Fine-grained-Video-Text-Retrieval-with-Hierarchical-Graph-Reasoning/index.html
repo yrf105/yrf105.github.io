@@ -35,7 +35,7 @@
 <meta property="og:image" content="http://example.com/2021/03/10/images/image-20210310112709729.png">
 <meta property="og:image" content="http://example.com/2021/03/10/images/image-20210310112930425.png">
 <meta property="article:published_time" content="2021-03-10T00:08:37.000Z">
-<meta property="article:modified_time" content="2021-03-19T00:53:17.030Z">
+<meta property="article:modified_time" content="2021-04-05T04:05:27.900Z">
 <meta property="article:author" content="wddxrw">
 <meta property="article:tag" content="论文阅读">
 <meta property="article:tag" content="跨模态检索">
@@ -201,12 +201,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -276,7 +276,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-03-19 08:53:17" itemprop="dateModified" datetime="2021-03-19T08:53:17+08:00">2021-03-19</time>
+        <time title="Modified: 2021-04-05 12:05:27" itemprop="dateModified" datetime="2021-04-05T12:05:27+08:00">2021-04-05</time>
       </span>
 
   
@@ -313,10 +313,18 @@
 <h4 id="initial-graph-node-representation">Initial Graph Node Representation</h4>
 <p>将 SRGS 中的每个节点初始化为一个向量。</p>
 <p>每一个视频描述 <span class="math inline">\(C\)</span> 由 <span class="math inline">\(N\)</span> 个单词组成 <span class="math inline">\(\{c_1, \cdots, c_N\}\)</span></p>
-<p>对于 event 节点，使用 Bi-LSTM + attention mechanism 将节点初始化为向量 <span class="math inline">\(g_{e}\)</span></p>
+<p>对于 event 节点，使用 Bi-LSTM + attention mechanism 将节点初始化为向量 <span class="math inline">\(g_{e}\)</span>。这里 attention mechanism 的实现就是如 式(4) 和 式(5) 所表达的：将 LSTM 的某个隐层拿出来，先通过一个全连接层，再通过一个 softmax 层就得到了注意力分数 <span class="math inline">\(a_{e,i}\)</span> ，最后将 LSTM 的隐层和注意力分数求和就得到了结果向量，用来表示整个句子的意思。</p>
+<details>
+<summary>
+<具体流程>
+</summary>
+</details>
 <p><img src="../images/image-20210310112709729.png" alt="image-20210310112709729" style="zoom:50%;" /></p>
 <p><img src="../images/image-20210310112930425.png" alt="image-20210310112930425" style="zoom:50%;" /></p>
-<p>对于 action 和 entity 使用 Bi-LSTM + max pooling 得到向量组 <span class="math inline">\(g_{a} = \{g_{a,1},...,g_{a,N_{a}}\}\)</span> 和 <span class="math inline">\(g_{o} = \{g_{o,1},...,g_{o,N_{o}}\}\)</span>, <span class="math inline">\(N_{a} N_{o}\)</span> 分别表示 action 和 entity 节点的数量</p>
+<p>Embedding(10510, 300)</p>
+<p>词嵌入<span class="math inline">\(\{w_1, \cdots, w_N\}\)</span></p>
+<hr />
+<p>对于 action 和 entity 使用 Bi-LSTM + max pooling 得到向量组 <span class="math inline">\(g_{a} = \{g_{a,1},...,g_{a,N_{a}}\}\)</span> 和 <span class="math inline">\(g_{o} = \{g_{o,1},...,g_{o,N_{o}}\}\)</span>, <span class="math inline">\(N_{a} N_{o}\)</span> 分别表示 action 和 entity 节点的数量。</p>
 <h4 id="attention-based-graph-reasoning">Attention-based Graph Reasoning</h4>
 <p>简单使用 relational GCN 会导致参数暴增，效率低且可能过拟合。</p>
 <p>本文方法： <span class="math display">\[
@@ -369,7 +377,13 @@ s_x = \sum_i s_{x,i}
 s(v,c) = (s_e + s_a + s_o) / 3 \tag{13}
 \]</span> 使用对比排名损失（<a target="_blank" rel="noopener" href="https://blog.csdn.net/LoseInVain/article/details/103995962">contrastive ranking loss</a>）训练模型 <span class="math display">\[
 L(v^+, c^+) = [\Delta + s(v^+,c^-) - s(v^+, c^+)]_+ + [\Delta + s(v^-,c^+) - s(v^+, c^+)]_+ \tag{14}
-\]</span> https://gombru.github.io/2019/04/03/ranking_loss/</p>
+\]</span> <span class="math inline">\(s(v^+, c^-)\)</span> <span class="math inline">\(s(v^-, c^+)\)</span> 表示负对得分</p>
+<p><span class="math inline">\(s(v^+, c^+)\)</span> 表示正对得分</p>
+<p><span class="math inline">\([\cdot]_+\)</span> 表示 <span class="math inline">\(\max\{0, \cdot\}\)</span></p>
+<p><span class="math inline">\(\Delta\)</span> 是超参数——阈值 <span class="math display">\[
+L(v^+, c^+) = \max\{ \Delta - \left( s(v^+, c^+) - s(v^+, c^-) \right) \}
+\]</span> 这里，正样本的得分越高且负样本的得分越低，则损失函数越小。这正是我们需要的。</p>
+<p>https://gombru.github.io/2019/04/03/ranking_loss/</p>
 <h2 id="实验">实验</h2>
 <p>在三个数据集上测试了常规 v2t 和 t2v 的性能。提出二分类选择任务评估模型细粒度描述能力。</p>
 <h3 id="数据集划分">数据集划分</h3>
@@ -421,7 +435,6 @@ L(v^+, c^+) = [\Delta + s(v^+,c^-) - s(v^+, c^+)]_+ + [\Delta + s(v^-,c^+) - s(v
 <tr class="header">
 <th>指标</th>
 <th>含义</th>
-<th></th>
 <th>备注</th>
 </tr>
 </thead>
@@ -430,18 +443,15 @@ L(v^+, c^+) = [\Delta + s(v^+,c^-) - s(v^+, c^+)]_+ + [\Delta + s(v^-,c^+) - s(v
 <td>Recall at K (R@K)</td>
 <td>对于所有查询得到的排名列表中，前 K 个查询结果出现正确答案的比例</td>
 <td></td>
-<td></td>
 </tr>
 <tr class="even">
 <td>Median Rank (MedR)</td>
 <td>对于所有查询得到的排名列表中，正确答案出现位置的中位数</td>
-<td></td>
 <td>越小越好</td>
 </tr>
 <tr class="odd">
 <td>Mean Rank (MnR)</td>
 <td>对于所有查询得到的排名列表中，正确答案出现位置的平均数</td>
-<td></td>
 <td>越小越好</td>
 </tr>
 </tbody>
@@ -451,7 +461,7 @@ L(v^+, c^+) = [\Delta + s(v^+,c^-) - s(v^+, c^+)]_+ + [\Delta + s(v^-,c^+) - s(v
 <li>对于视频，使用 Resnet152 提取 MSR-VTT 和 TGIF 的特征，VATEX 官方提供了特征</li>
 <li>对于文本，使用预训练的 <a target="_blank" rel="noopener" href="http://www.fanyeong.com/2018/02/19/glove-in-detail/">Glove</a> 嵌入将词嵌入为 300 维的向量</li>
 <li>使用两层注意力图卷积，每层的共享嵌入空间是 1024</li>
-<li>式 (12) 中的 <span class="math inline">\(\lambda = 0.4\)</span></li>
+<li>式 (12) 中的 <span class="math inline">\(\lambda = 4\)</span></li>
 <li>式 (14) 中的 <span class="math inline">\(\Delta = 0.2\)</span></li>
 <li>epoch = 50，mini-batch = 128</li>
 </ul>
@@ -522,6 +532,8 @@ L(v^+, c^+) = [\Delta + s(v^+,c^-) - s(v^+, c^+)]_+ + [\Delta + s(v^-,c^+) - s(v
 </summary>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;verbs&quot;</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;[V: Did] Uriah honestly think he could beat the game in under three hours ? .&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;B-V&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;verb&quot;</span>: <span class="string">&quot;Did&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Did [ARG0: Uriah] [ARGM-ADV: honestly] [V: think] [ARG1: he could beat the game in under three hours] ? .&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARG0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARGM-ADV&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-V&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;verb&quot;</span>: <span class="string">&quot;think&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Did Uriah honestly think he [V: could] beat the game in under three hours ? .&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-V&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;verb&quot;</span>: <span class="string">&quot;could&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Did Uriah honestly think [ARG0: he] [ARGM-MOD: could] [V: beat] [ARG1: the game] [ARGM-TMP: in under three hours] ? .&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARG0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARGM-MOD&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-V&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARG1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;B-ARGM-TMP&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARGM-TMP&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARGM-TMP&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I-ARGM-TMP&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span>,</span><br><span class="line">        <span class="string">&quot;O&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;verb&quot;</span>: <span class="string">&quot;beat&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">&quot;words&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;Did&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Uriah&quot;</span>,</span><br><span class="line">    <span class="string">&quot;honestly&quot;</span>,</span><br><span class="line">    <span class="string">&quot;think&quot;</span>,</span><br><span class="line">    <span class="string">&quot;he&quot;</span>,</span><br><span class="line">    <span class="string">&quot;could&quot;</span>,</span><br><span class="line">    <span class="string">&quot;beat&quot;</span>,</span><br><span class="line">    <span class="string">&quot;the&quot;</span>,</span><br><span class="line">    <span class="string">&quot;game&quot;</span>,</span><br><span class="line">    <span class="string">&quot;in&quot;</span>,</span><br><span class="line">    <span class="string">&quot;under&quot;</span>,</span><br><span class="line">    <span class="string">&quot;three&quot;</span>,</span><br><span class="line">    <span class="string">&quot;hours&quot;</span>,</span><br><span class="line">    <span class="string">&quot;?&quot;</span>,</span><br><span class="line">    <span class="string">&quot;.&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </details>
+<p>B代表开始，I代表中间，O代表结尾。</p></li>
+</ol>
 <table>
 <thead>
 <tr class="header">
@@ -593,7 +605,8 @@ L(v^+, c^+) = [\Delta + s(v^+,c^-) - s(v^+, c^+)]_+ + [\Delta + s(v^-,c^+) - s(v
 <td></td>
 </tr>
 </tbody>
-</table></li>
+</table>
+<ol start="2" type="1">
 <li><p>将句子转换为角色图</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd misc</span><br><span class="line">jupyter notebook</span><br><span class="line"><span class="comment"># open parse_sent_to_role_graph.ipynd</span></span><br></pre></td></tr></table></figure>
 <p>程序分为两个大部分，一是对存在角色语义标签的句子生成角色图，二是对不存在角色语义标签的句子生成角色图</p>
