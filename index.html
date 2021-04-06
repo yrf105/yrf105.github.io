@@ -189,7 +189,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -223,6 +223,72 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/05/go-%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/05/go-%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">go-基础</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-04-05 21:00:03 / Modified: 21:36:24" itemprop="dateCreated datePublished" datetime="2021-04-05T21:00:03+08:00">2021-04-05</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="新手起航">新手起航</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建 go.mod 文件追踪代码依赖</span></span><br><span class="line">go mod init example.com/hello</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改依赖路径为本地路径</span></span><br><span class="line">go mod edit -replace=example.com/greetings=../greetings</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加代码中的依赖</span></span><br><span class="line">go mod tidy</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在以 _test.go 结尾的代码中编写测试代码，运行以下命令执行测试</span></span><br><span class="line">go test</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成可执行文件</span></span><br><span class="line">go build</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装可执行文件</span></span><br><span class="line">go install</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认情况下会安装到以下命令输出的路径中</span></span><br><span class="line">go list -f &#x27;&#123;&#123;.Target&#125;&#125;&#x27;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定安装路径</span></span><br><span class="line">go env -w GOBIN=/path/to/your/bin</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将安装路径添加的 PATH</span></span><br><span class="line">export PATH=$PATH:/path/to/your/install/directory</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -558,10 +624,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-03-15 21:27:48 / Modified: 22:31:29" itemprop="dateCreated datePublished" datetime="2021-03-15T21:27:48+08:00">2021-03-15</time>
+      <time title="Created: 2021-03-15 21:27:48" itemprop="dateCreated datePublished" datetime="2021-03-15T21:27:48+08:00">2021-03-15</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-04-06 21:17:44" itemprop="dateModified" datetime="2021-04-06T21:17:44+08:00">2021-04-06</time>
+      </span>
 
   
 </div>
@@ -573,50 +645,17 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="where">WHERE</h2>
-<p>提取满足指定条件的记录</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name,column_name</span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line"><span class="keyword">WHERE</span> column_name operator <span class="keyword">value</span>;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>operator: =, &gt;, &lt;, &gt;= , &lt;=, !=, &lt;&gt; 表示（不等于），可使用 not, and, or 连接</li>
-<li>is null: 判空</li>
-<li>between A and B: [A, B] 之间的值</li>
-<li>in (a, b, c): 等于 a 或 b 或 c 的值</li>
-<li>like 模糊查询
-<ul>
-<li><strong>%</strong> 表示多个字值，**_** 下划线表示一个字符</li>
-<li><strong>M%</strong> : 查询以 M 开头的内容</li>
-<li><strong>%M%</strong> : 查询包含 M 的所有内容</li>
-<li><strong>%M_</strong> : 查询 M 在倒数第二位的所有内容</li>
-</ul></li>
-</ul>
-<h2 id="order-by">ORDER BY</h2>
-<p>对结果集进行排序</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name,column_name</span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> column_name,column_name <span class="keyword">ASC</span><span class="operator">|</span><span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>默认升序</li>
-</ul>
-<h2 id="limit">LIMIT</h2>
-<p>限制 SELECT 返回的数据数量</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column1, column2, columnN </span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line">LIMIT [<span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> column1, column2, columnN </span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line">LIMIT [<span class="type">row</span> num, <span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span>] # 从第 <span class="type">row</span> num 行开始提取 <span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span> 行</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> column1, column2, columnN </span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line">LIMIT [<span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span>] <span class="keyword">OFFSET</span> [<span class="type">row</span> num] # 从第 <span class="type">row</span> num 行开始提取 <span class="keyword">no</span> <span class="keyword">of</span> <span class="keyword">rows</span> 行</span><br></pre></td></tr></table></figure>
-<h2 id="join">JOIN</h2>
-<figure>
-<img src="../images/sql-join.png" alt="" /><figcaption>img</figcaption>
+          <figure>
+<img src="../images/v2-7b3ce28c0f82fb470882c0fba32cbb1f_1440w.jpg" alt="" /><figcaption>SQL入门：查询语句&amp;运算符</figcaption>
 </figure>
-<ul>
-<li><strong>INNER JOIN</strong>：如果表中有至少一个匹配，则返回行</li>
-<li><strong>LEFT JOIN</strong>：即使右表中没有匹配，也从左表返回所有的行</li>
-<li><strong>RIGHT JOIN</strong>：即使左表中没有匹配，也从右表返回所有的行</li>
-<li><strong>FULL JOIN</strong>：只要其中一个表中存在匹配，则返回行</li>
-<li>通过 A.colname 可以访问到 A 表里的 colname 列</li>
-</ul>
-<h2 id="函数">函数</h2>
-<h2 id="max">MAX()</h2>
-<p>返回指定列的最大值</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">MAX</span>(column_name) <span class="keyword">FROM</span> table_name;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>有多个最大值会返回多个最大值</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/03/15/SQL%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -939,79 +978,6 @@
 </summary>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 以下来自linux 2.4.20-18的内核代码中的/usr/include/asm/errno.h */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _I386_ERRNO_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _I386_ERRNO_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EPERM 1 <span class="comment">/* Operation not permitted */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOENT 2 <span class="comment">/* No such file or directory */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ESRCH 3 <span class="comment">/* No such process */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EINTR 4 <span class="comment">/* Interrupted system call */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EIO 5 <span class="comment">/* I/O error */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENXIO 6 <span class="comment">/* No such device or address */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> E2BIG 7 <span class="comment">/* Arg list too long */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOEXEC 8 <span class="comment">/* Exec format error */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBADF 9 <span class="comment">/* Bad file number */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ECHILD 10 <span class="comment">/* No child processes */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EAGAIN 11 <span class="comment">/* Try again */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOMEM 12 <span class="comment">/* Out of memory */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EACCES 13 <span class="comment">/* Permission denied */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EFAULT 14 <span class="comment">/* Bad address */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOTBLK 15 <span class="comment">/* Block device required */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBUSY 16 <span class="comment">/* Device or resource busy */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EEXIST 17 <span class="comment">/* File exists */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXDEV 18 <span class="comment">/* Cross-device link */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENODEV 19 <span class="comment">/* No such device */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOTDIR 20 <span class="comment">/* Not a directory */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EISDIR 21 <span class="comment">/* Is a directory */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EINVAL 22 <span class="comment">/* Invalid argument */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENFILE 23 <span class="comment">/* File table overflow */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EMFILE 24 <span class="comment">/* Too many open files */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOTTY 25 <span class="comment">/* Not a typewriter */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ETXTBSY 26 <span class="comment">/* Text file busy */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EFBIG 27 <span class="comment">/* File too large */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOSPC 28 <span class="comment">/* No space left on device */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ESPIPE 29 <span class="comment">/* Illegal seek */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EROFS 30 <span class="comment">/* Read-only file system */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EMLINK 31 <span class="comment">/* Too many links */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EPIPE 32 <span class="comment">/* Broken pipe */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EDOM 33 <span class="comment">/* Math argument out of domain of func */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERANGE 34 <span class="comment">/* Math result not representable */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EDEADLK 35 <span class="comment">/* Resource deadlock would occur */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENAMETOOLONG 36 <span class="comment">/* File name too long */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOLCK 37 <span class="comment">/* No record locks available */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOSYS 38 <span class="comment">/* Function not implemented */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOTEMPTY 39 <span class="comment">/* Directory not empty */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ELOOP 40 <span class="comment">/* Too many symbolic links encountered */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EWOULDBLOCK EAGAIN <span class="comment">/* Operation would block */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOMSG 42 <span class="comment">/* No message of desired type */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EIDRM 43 <span class="comment">/* Identifier removed */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ECHRNG 44 <span class="comment">/* Channel number out of range */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EL2NSYNC 45 <span class="comment">/* Level 2 not synchronized */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EL3HLT 46 <span class="comment">/* Level 3 halted */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EL3RST 47 <span class="comment">/* Level 3 reset */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ELNRNG 48 <span class="comment">/* Link number out of range */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EUNATCH 49 <span class="comment">/* Protocol driver not attached */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOCSI 50 <span class="comment">/* No CSI structure available */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EL2HLT 51 <span class="comment">/* Level 2 halted */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBADE 52 <span class="comment">/* Invalid exchange */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBADR 53 <span class="comment">/* Invalid request descriptor */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXFULL 54 <span class="comment">/* Exchange full */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOANO 55 <span class="comment">/* No anode */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBADRQC 56 <span class="comment">/* Invalid request code */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBADSLT 57 <span class="comment">/* Invalid slot */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EDEADLOCK EDEADLK</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBFONT 59 <span class="comment">/* Bad font file format */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOSTR 60 <span class="comment">/* Device not a stream */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENODATA 61 <span class="comment">/* No data available */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ETIME 62 <span class="comment">/* Timer expired */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOSR 63 <span class="comment">/* Out of streams resources */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENONET 64 <span class="comment">/* Machine is not on the network */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOPKG 65 <span class="comment">/* Package not installed */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EREMOTE 66 <span class="comment">/* Object is remote */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOLINK 67 <span class="comment">/* Link has been severed */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EADV 68 <span class="comment">/* Advertise error */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ESRMNT 69 <span class="comment">/* Srmount error */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ECOMM 70 <span class="comment">/* Communication error on send */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EPROTO 71 <span class="comment">/* Protocol error */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EMULTIHOP 72 <span class="comment">/* Multihop attempted */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EDOTDOT 73 <span class="comment">/* RFS specific error */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBADMSG 74 <span class="comment">/* Not a data message */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EOVERFLOW 75 <span class="comment">/* Value too large for defined data type */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOTUNIQ 76 <span class="comment">/* Name not unique on network */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EBADFD 77 <span class="comment">/* File descriptor in bad state */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EREMCHG 78 <span class="comment">/* Remote address changed */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ELIBACC 79 <span class="comment">/* Can not access a needed shared library */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ELIBBAD 80 <span class="comment">/* Accessing a corrupted shared library */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ELIBSCN 81 <span class="comment">/* .lib section in a.out corrupted */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ELIBMAX 82 <span class="comment">/* Attempting to link in too many shared libraries */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ELIBEXEC 83 <span class="comment">/* Cannot exec a shared library directly */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EILSEQ 84 <span class="comment">/* Illegal byte sequence */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERESTART 85 <span class="comment">/* Interrupted system call should be restarted */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ESTRPIPE 86 <span class="comment">/* Streams pipe error */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EUSERS 87 <span class="comment">/* Too many users */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOTSOCK 88 <span class="comment">/* Socket operation on non-socket */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EDESTADDRREQ 89 <span class="comment">/* Destination address required */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EMSGSIZE 90 <span class="comment">/* Message too long */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EPROTOTYPE 91 <span class="comment">/* Protocol wrong type for socket */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOPROTOOPT 92 <span class="comment">/* Protocol not available */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EPROTONOSUPPORT 93 <span class="comment">/* Protocol not supported */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ESOCKTNOSUPPORT 94 <span class="comment">/* Socket type not supported */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EOPNOTSUPP 95 <span class="comment">/* Operation not supported on transport endpoint */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EPFNOSUPPORT 96 <span class="comment">/* Protocol family not supported */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EAFNOSUPPORT 97 <span class="comment">/* Address family not supported by protocol */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EADDRINUSE 98 <span class="comment">/* Address already in use */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EADDRNOTAVAIL 99 <span class="comment">/* Cannot assign requested address */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENETDOWN 100 <span class="comment">/* Network is down */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENETUNREACH 101 <span class="comment">/* Network is unreachable */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENETRESET 102 <span class="comment">/* Network dropped connection because of reset */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ECONNABORTED 103 <span class="comment">/* Software caused connection abort */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ECONNRESET 104 <span class="comment">/* Connection reset by peer */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOBUFS 105 <span class="comment">/* No buffer space available */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EISCONN 106 <span class="comment">/* Transport endpoint is already connected */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOTCONN 107 <span class="comment">/* Transport endpoint is not connected */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ESHUTDOWN 108 <span class="comment">/* Cannot send after transport endpoint shutdown */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ETOOMANYREFS 109 <span class="comment">/* Too many references: cannot splice */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ETIMEDOUT 110 <span class="comment">/* Connection timed out */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ECONNREFUSED 111 <span class="comment">/* Connection refused */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EHOSTDOWN 112 <span class="comment">/* Host is down */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EHOSTUNREACH 113 <span class="comment">/* No route to host */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EALREADY 114 <span class="comment">/* Operation already in progress */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EINPROGRESS 115 <span class="comment">/* Operation now in progress */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ESTALE 116 <span class="comment">/* Stale NFS file handle */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EUCLEAN 117 <span class="comment">/* Structure needs cleaning */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOTNAM 118 <span class="comment">/* Not a XENIX named type file */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENAVAIL 119 <span class="comment">/* No XENIX semaphores available */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EISNAM 120 <span class="comment">/* Is a named type file */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EREMOTEIO 121 <span class="comment">/* Remote I/O error */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EDQUOT 122 <span class="comment">/* Quota exceeded */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENOMEDIUM 123 <span class="comment">/* No medium found */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EMEDIUMTYPE 124 <span class="comment">/* Wrong medium type */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
 </details>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/12/git-tricks/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wddxrw">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wddxrw's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/12/git-tricks/" class="post-title-link" itemprop="url">git tricks</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-03-12 13:39:35" itemprop="dateCreated datePublished" datetime="2021-03-12T13:39:35+08:00">2021-03-12</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-03-25 16:55:24" itemprop="dateModified" datetime="2021-03-25T16:55:24+08:00">2021-03-25</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="为已经-push-的项目添加-.gitignore">为已经 push 的项目添加 .gitignore</h2>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git rm -r --cached .</span><br><span class="line">git add .</span><br><span class="line">git commit -m &#x27;update .gitignore&#x27;</span><br></pre></td></tr></table></figure>
-<h2 id="commit-message-和-change-log-编写指南"><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html">Commit message 和 Change log 编写指南</a></h2>
 
       
     </div>
