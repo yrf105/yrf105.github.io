@@ -189,7 +189,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -223,6 +223,172 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/14/python-tricks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/03/14/python-tricks/" class="post-title-link" itemprop="url">Python tricks</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-03-14 08:35:22" itemprop="dateCreated datePublished" datetime="2021-03-14T08:35:22+08:00">2021-03-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-03-22 11:11:08" itemprop="dateModified" datetime="2021-03-22T11:11:08+08:00">2021-03-22</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="环境配置">环境配置</h2>
+<h3 id="设置-pythonpath-python-环境变量">设置 PYTHONPATH （python 环境变量）</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打印环境变量</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">print(sys.path)</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在 shell 中添加环境变量</span></span><br><span class="line">export PYTHONPATH=$(pwd):$&#123;PYTHONPATH&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在程序中添加环境变量</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.append([路径])</span><br></pre></td></tr></table></figure>
+<h2 id="常见任务">常见任务</h2>
+<h3 id="读入命令行参数">读入命令行参数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">&quot;--para1&quot;</span>)</span><br><span class="line"><span class="comment"># action=&quot;store_true&quot; 表示 只要这个参数传参就将其设置为 True</span></span><br><span class="line">parser.add_argument(<span class="string">&quot;--para2&quot;</span>, default=<span class="literal">False</span>, action=<span class="string">&quot;store_true&quot;</span>)</span><br><span class="line">parser.add_argument(<span class="string">&quot;--para3&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span>, default=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">ops = parser.parse_args()</span><br><span class="line"></span><br><span class="line">print(ops.para1)</span><br><span class="line">print(ops.para2)</span><br><span class="line">print(ops.para3)</span><br></pre></td></tr></table></figure>
+<p>结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">python clpara.py --para1=&quot;hello&quot; --para2 --para3=22</span><br><span class="line"></span><br><span class="line">hello</span><br><span class="line">True</span><br><span class="line">22</span><br></pre></td></tr></table></figure>
+<h2 id="pycharm">pycharm</h2>
+<h3 id="配置项目路径">配置项目路径</h3>
+<p>File -&gt; Settings -&gt; Project -&gt; Project Structure</p>
+<h2 id="pytorch">pytorch</h2>
+<h3 id="torch.bmm">torch.bmm</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">torch.bmm(input, mat2, *, deterministic&#x3D;False, out&#x3D;None) → Tensor</span><br></pre></td></tr></table></figure>
+<p>对 input 和 mat2 中的矩阵进行批处理矩阵相乘。input 和 mat2 必须是 3 - D 的 tensor，包含有相同数量的矩阵</p>
+<p>例如：input (10, 3, 4)，mat2 (10, 4, 5) 进行 bmm 后得到的结果为 result (10, 3, 5)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">input</span> = torch.randn(<span class="number">10</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">mat2 = torch.randn(<span class="number">10</span>, <span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line">torch.bmm(<span class="built_in">input</span>, mat2).size()</span><br><span class="line">torch.Size([<span class="number">10</span>, <span class="number">3</span>, <span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/13/c-tricks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/03/13/c-tricks/" class="post-title-link" itemprop="url">C++ tricks</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-03-13 20:28:17" itemprop="dateCreated datePublished" datetime="2021-03-13T20:28:17+08:00">2021-03-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-04-06 22:19:01" itemprop="dateModified" datetime="2021-04-06T22:19:01+08:00">2021-04-06</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <span id="more"></span>
+<h2 id="文件">文件</h2>
+<h3 id="如何从posix文件描述符构造-c-fstream">如何从POSIX文件描述符构造 c++ fstream？</h3>
+<h4 id="方法一-使用非标准扩展平台相关">方法一 使用非标准扩展（平台相关）</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ext/stdio_filebuf.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> fd = open(<span class="string">&quot;data.txt&quot;</span>, O_RDONLY);</span><br><span class="line">    <span class="built_in">std</span>::ofstream ofs;</span><br><span class="line">    ofs.open(<span class="string">&quot;data_cpy.txt&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function">__gnu_cxx::stdio_filebuf&lt;<span class="keyword">char</span>&gt; <span class="title">filebuf</span><span class="params">(fd, <span class="built_in">std</span>::ios::in)</span></span>;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::istream <span class="title">is</span><span class="params">(&amp;filebuf)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">while</span> (is.read(buffer, <span class="number">8</span>)) &#123;</span><br><span class="line">        ofs.write(buffer, <span class="number">8</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (is.gcount() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        ofs.write(buffer, is.gcount());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    close(fd);</span><br><span class="line">    ofs.close();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="方法二-使用-boost">方法二 使用 boost</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -363,70 +529,6 @@
           <h2 id="为已经-push-的项目添加-.gitignore">为已经 push 的项目添加 .gitignore</h2>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git rm -r --cached .</span><br><span class="line">git add .</span><br><span class="line">git commit -m &#x27;update .gitignore&#x27;</span><br></pre></td></tr></table></figure>
 <h2 id="commit-message-和-change-log-编写指南"><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html">Commit message 和 Change log 编写指南</a></h2>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/12/%E5%8D%A7%E8%B0%88%E6%9D%82%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wddxrw">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wddxrw's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/12/%E5%8D%A7%E8%B0%88%E6%9D%82%E8%AE%B0/" class="post-title-link" itemprop="url">卧谈杂记</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-03-12 08:09:23" itemprop="dateCreated datePublished" datetime="2021-03-12T08:09:23+08:00">2021-03-12</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          
 
       
     </div>
