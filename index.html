@@ -260,7 +260,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2021-04-10 12:38:28 / Modified: 14:18:21" itemprop="dateCreated datePublished" datetime="2021-04-10T12:38:28+08:00">2021-04-10</time>
+      <time title="Created: 2021-04-10 12:38:28 / Modified: 14:36:19" itemprop="dateCreated datePublished" datetime="2021-04-10T12:38:28+08:00">2021-04-10</time>
     </span>
 
   
@@ -277,7 +277,7 @@
 <h4 id="q-why-does-6.824-use-go-for-the-labs">Q: Why does 6.824 use Go for the labs?</h4>
 <p>以前用过 C++，Go 有垃圾收集，类型安全，线程，RPC，Java 也可以。</p>
 <h4 id="q-do-goroutines-run-in-parallel-can-you-use-them-to-increase-performance">Q: Do goroutines run in parallel? Can you use them to increase performance?</h4>
-<p>Go 的 goroutines 和其他语言的线程类似。Go 的运行时在所有可用的核上并行的执行 goroutines。若 goroutines 的数目大于物理核数，则他们抢占式的分时共享物理核。</p>
+<p>Go 的 goroutines 和其他语言的线程类似。Go 的运行时在所有可用的物理核上并行的执行 goroutines。若 goroutines 的数目大于物理核数，则他们抢占式的分时共享物理核。</p>
 <h4 id="q-how-do-go-channels-work-how-does-go-make-sure-they-are-synchronized-between-the-many-possible-goroutines">Q: How do Go channels work? How does Go make sure they are synchronized between the many possible goroutines?</h4>
 <p>https://golang.org/src/runtime/chan.go</p>
 <p>从上层来看，一个 channel 就是一个持有 buffer 和 lock 的结构体。在通道上发送涉及获取锁，等待（也许释放CPU），直到接收到某个线程为止，然后传递消息。接收涉及获取锁并等待发送者。您可以使用 Go <code>sync.Mutex</code>和 <code>sync.Cond</code> 实现自己的 channel。</p>
