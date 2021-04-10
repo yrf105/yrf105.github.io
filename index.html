@@ -190,13 +190,15 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
         <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">tags</span>
+        <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
 </div>
@@ -224,6 +226,129 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/10/6-824-2021-Go-FAQ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/10/6-824-2021-Go-FAQ/" class="post-title-link" itemprop="url">6.824 2021 Go FAQ</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-04-10 12:38:28 / Modified: 14:12:16" itemprop="dateCreated datePublished" datetime="2021-04-10T12:38:28+08:00">2021-04-10</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="q-why-does-6.824-use-go-for-the-labs">Q: Why does 6.824 use Go for the labs?</h4>
+<p>以前用过 C++，Go 有垃圾收集，类型安全，线程，RPC，Java 也可以。</p>
+<h4 id="q-do-goroutines-run-in-parallel-can-you-use-them-to-increase-performance">Q: Do goroutines run in parallel? Can you use them to increase performance?</h4>
+<p>Go 的 goroutines 和其他语言的线程类似。Go 的运行时在所有可用的核上并行的执行 goroutines。若 goroutines 的数目大于物理核数，则他们抢占式的分时共享物理核。</p>
+<h4 id="q-how-do-go-channels-work-how-does-go-make-sure-they-are-synchronized-between-the-many-possible-goroutines">Q: How do Go channels work? How does Go make sure they are synchronized between the many possible goroutines?</h4>
+<p>https://golang.org/src/runtime/chan.go</p>
+<p>从上层来看，一个 channel 就是一个持有 buffer 和 lock 的结构体。在通道上发送涉及获取锁，等待（也许释放CPU），直到接收到某个线程为止，然后传递消息。接收涉及获取锁并等待发送者。您可以使用 Go <code>sync.Mutex</code>和 <code>sync.Cond</code> 实现自己的 channel。</p>
+<h4 id="q-我通过在-channel-上发送一个-bool-来唤醒另一个-goroutine但是如果想要唤醒的-goroutine-已在运行因此无法在通道上接收则发送-goroutine-会阻塞我应该怎么办">Q: 我通过在 channel 上发送一个 bool 来唤醒另一个 goroutine。但是，如果想要唤醒的 goroutine 已在运行（因此无法在通道上接收），则发送 goroutine 会阻塞。我应该怎么办？</h4>
+<p>使用条件变量（<code>sync.Cond</code>）。在不确定 channel 另一端是否有 goroutine 在等待时不要使用 channel。</p>
+<h4 id="q-我如何让-goroutine-等待来自多个不同-channel-中任何一个-channel-的输入">Q: 我如何让 goroutine 等待来自多个不同 channel 中任何一个 channel 的输入？</h4>
+<p>尝试为每一个 channel 创建一个 goroutine，每个 goroutine 阻塞在对应的 channel 上。或者尝试 <code>select</code></p>
+<h4 id="q-什么时候用-sync.waitgroup-什么时候用-channel">Q: 什么时候用 <code>sync.WaitGroup</code> ？什么时候用 <code>channel</code> ？</h4>
+<p><code>WaitGroup</code> 有着特殊的用途。仅在等待大量活动完成时使用。channel 更具通用性；例如，可以通过 channel 传值。可以使用 channels 等待多个 goroutine，尽管与 <code>WaitGroup</code> 相比，它需要x写更多的代码。</p>
+<h4 id="q-我需要代码每秒执行一个任务最简单的方法是什么">Q: 我需要代码每秒执行一个任务，最简单的方法是什么？</h4>
+<p>创建专用于该定时任务的 <code>goroutine</code>。它应该有一个循环，该循环使用 <code>time.Sleep()</code> 暂停一秒钟，然后执行任务，然后再 <code>time.Sleep()</code>。</p>
+<h4 id="q-我们如何知道何时-goroutines-产生的开销超过我们从它们那里获得的并发性">Q: 我们如何知道何时 goroutines 产生的开销超过我们从它们那里获得的并发性？</h4>
+<p>这取决于！如果计算机有16个核，并且正在利用 CPU 并行性，则应该大约有16个可执行 goroutine。如果获取网页需要花费 0.1 秒的实时时间，并且网络每秒能够传输 100 个网页，则可能需要同时启动大约 10 个 goroutine 才能使用所有网络容量。随着增加 goroutine 的数量，一段时间后，会看到吞吐量增加，然后吞吐量会维持稳定。从性能的角度来看，这时的 goroutines 就足够了。</p>
+<h4 id="q-一如何创建一个通过-internet-连接的-go-channel如何指定用于发送消息的协议">Q: 一如何创建一个通过 Internet 连接的 Go channel？如何指定用于发送消息的协议？</h4>
+<p>Go channel 只能在单机工作。这事应该使用 <a target="_blank" rel="noopener" href="https://golang.org/pkg/net/rpc/">rpc</a> 它允许你访问另一台机器上的 Go 程序。</p>
+<h4 id="q-需要了解哪些重要有用的特定于go的并发模式">Q: 需要了解哪些重要/有用的特定于Go的并发模式？</h4>
+<p><a target="_blank" rel="noopener" href="https://talks.golang.org/2012/concurrency.slide">专家建议</a></p>
+<h4 id="q-切片是如何实现的">Q: 切片是如何实现的？</h4>
+<p>切片是包含一个指向数组的指针以及其起始索引的对象。这允许多个切片共享一个基础数组，每个切片可能会暴露不同范围的数组元素。<a target="_blank" rel="noopener" href="https://blog.golang.org/go-slices-usage-and-internals">扩展讨论</a> 切片比数组更加灵活因为数组的大小是其类型的一部分，而以切片为参数的函数可以使用任何长度的切片。</p>
+<h4 id="q-go-的-debugging-工具">Q: Go 的 debugging 工具？</h4>
+<p><a target="_blank" rel="noopener" href="https://golang.org/doc/gdb">GDB</a> 和 <code>fmt.Printf()</code></p>
+<h4 id="q-什么时候用同步-rpc什么时候用异步-rpc">Q: 什么时候用同步 RPC？什么时候用异步 RPC？</h4>
+<p>同步 RPC</p>
+<ul>
+<li>当代码必须获得 RPC 的回复才能继续执行时。</li>
+</ul>
+<p>异步 RPC</p>
+<ul>
+<li>客户端需要启动许多并发的 RPCS</li>
+<li>客户端在等待 RPC 回复的同时要干别的事</li>
+</ul>
+<p>我从来不使用异步 RPC，当我不想阻塞等待 RPC 结果时就启动一个 goroutine 来完成同步的 <code>Call()</code>。</p>
+<h4 id="q-go-有在工业界使用吗">Q: Go 有在工业界使用吗？</h4>
+<p>https://www.tiobe.com/tiobe-index/</p>
+<h4 id="q-开始使用go时开发人员会面临哪些常见问题">Q: 开始使用Go时，开发人员会面临哪些常见问题？</h4>
+<ul>
+<li>并发访问 map 时不使用锁</li>
+<li>channels 死锁</li>
+<li>创建 goroutine 时未捕获变量</li>
+<li>Leaking go routines</li>
+</ul>
+<h4 id="q-go-支持继承吗">Q: Go 支持继承吗？</h4>
+<p>不支持，但是可以使用 接口 + 结构体</p>
+<h4 id="q-goroutines-在主线程执行完毕后不会继续执行">Q: Goroutines 在主线程执行完毕后不会继续执行？</h4>
+<p><a target="_blank" rel="noopener" href="https://golang.org/ref/spec#Program_execution">是的</a></p>
+<blockquote>
+<p>通过将单个未导入的程序包（称为主程序包）与该程序包所导入的所有程序包链接起来，可以创建一个完整的程序。主程序包必须具有程序包名称 main 并声明一个不带任何参数且不返回任何值的 main 函数。程序执行首先初始化主程序包，然后调用函数main。当该函数调用返回时，程序退出。它不等待其他（非主）goroutine完成。</p>
+</blockquote>
+<h4 id="q-什么时候值传递什么时候指针传递">Q: 什么时候值传递？什么时候指针传递？</h4>
+<ul>
+<li>当想要修改值时不得不使用指针</li>
+<li>当结构体很大时使用指针，不然会发生拷贝</li>
+<li>当结构体有锁成员时，使用这指针，我们不希望复制锁</li>
+<li>其他情况可以使用值传递</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -414,7 +539,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-04-09 11:31:05" itemprop="dateModified" datetime="2021-04-09T11:31:05+08:00">2021-04-09</time>
+        <time title="Modified: 2021-04-10 11:14:03" itemprop="dateModified" datetime="2021-04-10T11:14:03+08:00">2021-04-10</time>
       </span>
 
   
@@ -916,86 +1041,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/15/SQL%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wddxrw">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="wddxrw's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/15/SQL%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/" class="post-title-link" itemprop="url">SQL命令速查</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-03-15 21:27:48" itemprop="dateCreated datePublished" datetime="2021-03-15T21:27:48+08:00">2021-03-15</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-04-07 21:01:15" itemprop="dateModified" datetime="2021-04-07T21:01:15+08:00">2021-04-07</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><img src="../images/v2-7b3ce28c0f82fb470882c0fba32cbb1f_1440w.jpg" /></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/03/15/SQL%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1078,7 +1125,38 @@ if (document.querySelectorAll('.pdf-container').length) {
 
 
 
-  
+  <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'none'
+      },
+      options: {
+        renderActions: {
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
 
 
 </body>
