@@ -31,7 +31,7 @@
 <meta property="og:description" content="https:&#x2F;&#x2F;pdos.csail.mit.edu&#x2F;6.824&#x2F;labs&#x2F;lab-mr.html">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-04-10T06:51:07.000Z">
-<meta property="article:modified_time" content="2021-04-10T13:01:03.548Z">
+<meta property="article:modified_time" content="2021-04-11T08:56:38.947Z">
 <meta property="article:author" content="wddxrw">
 <meta property="article:tag" content="分布式">
 <meta name="twitter:card" content="summary">
@@ -182,7 +182,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B"><span class="nav-number">2.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%A0%E7%9A%84%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">你的工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99"><span class="nav-number">4.</span> <span class="nav-text">规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA"><span class="nav-number">5.</span> <span class="nav-text">提示</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B"><span class="nav-number">2.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%A0%E7%9A%84%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">你的工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99"><span class="nav-number">4.</span> <span class="nav-text">规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA"><span class="nav-number">5.</span> <span class="nav-text">提示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%91%E6%88%98"><span class="nav-number">6.</span> <span class="nav-text">挑战</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -265,10 +265,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-04-10 14:51:07 / Modified: 21:01:03" itemprop="dateCreated datePublished" datetime="2021-04-10T14:51:07+08:00">2021-04-10</time>
+      <time title="Created: 2021-04-10 14:51:07" itemprop="dateCreated datePublished" datetime="2021-04-10T14:51:07+08:00">2021-04-10</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-04-11 16:56:38" itemprop="dateModified" datetime="2021-04-11T16:56:38+08:00">2021-04-11</time>
+      </span>
 
   
 </div>
@@ -293,9 +299,9 @@
 <p><code>mrsequential.go</code> 的输出在 <code>mr-out-0</code> 。输入文件是 <code>pg-xxx.txt</code>。</p>
 <p>可以从 <code>mrsequential.go</code> 中借鉴代码。也应该看一下 <code>mrapps/wc.go</code> 了解 MapReduce 的应用代码怎么写。</p>
 <h2 id="你的工作">你的工作</h2>
-<p>实验是实现一个分布式的 MapReduce， 由 coordinator 和 worker 组成。一个 coordinator 和一个或多个并发的 worker。真实系统中 worker 运行在一组不同的机器上，但是本实验中将运行他们在单个机器上。worker 和 coordinator 通过 RPC 进行通信。每个 worker 向 coordinator 请求任务，从一个或多个文件读取任务输入，执行任务，将任务输出写入一个或多个文件。coordinator 应该注意 worker 是否在规定的时间（本实验是 10 s）里没有完成任务并将未完成的任务给另一个 worker 去执行。</p>
+<p>实验是实现一个分布式的 MapReduce， 由 coordinator 和 worker 组成，一个 coordinator 和一个或多个并发的 worker。真实系统中 worker 运行在一组不同的机器上，但是本实验中将在单个机器上运行他们。worker 和 coordinator 通过 RPC 进行通信。每个 worker 向 coordinator 请求任务，从一个或多个文件读取任务输入，执行任务，将任务输出写入一个或多个文件。coordinator 应该注意 worker 是否在规定的时间（本实验是 10 s）里没有完成任务并将未完成的任务给另一个 worker 去执行。</p>
 <p>我们已经给出了初始代码。分别在 <code>main/mrcoordinator.go</code> 和 <code>main/mrworker.go</code> 中；不要修改这些文件。你应该将你的实现放在 <code>mr/coordinator.go</code>，<code>mr/worker.go</code>, <code>mr/rpc.go</code>。</p>
-<p>这是在单词计数MapReduce应用程序上运行代码的方法。首先，请确保单词计数插件是最新版本</p>
+<p>这是在单词计数 MapReduce 应用程序上运行代码的方法。首先，请确保单词计数插件是最新版本</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go build -race -buildmode=plugin ../mrapps/wc.go</span><br></pre></td></tr></table></figure>
 <p>在 <code>main</code> 目录，运行 coordinator。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rm mr-out*</span><br><span class="line">go run -race mrcoordinator.go pg-*.txt</span><br></pre></td></tr></table></figure>
@@ -330,13 +336,34 @@
 <ul>
 <li><p>一个简单的方法是修改 <code>mr/worker.go</code> 的 <code>Worker()</code> 向 coordinator 发送一个 RPC 请求任务。然后修改 coordinator 回应任务要处理的文件名作为 map 任务。然后修改 Worker 读取文件并调用应用程序 Map() 就像 <code>mrsequential.go</code> 那样。</p></li>
 <li><p>应用程序 Map 和 Reduce 函数在运行时使用 Go 插件包从名称以 .so 结尾的文件中加载。</p></li>
-<li><p>如果您在 <code>mr /</code> 目录中进行了任何更改，则可能必须重新构建您使用的所有 MapReduce 插件，例如 <code>go build -race -buildmode = plugin ../mrapps/wc.go</code></p></li>
+<li><p>如果您在 <code>mr /</code> 目录中进行了任何更改，则可能必须重新构建您使用的所有 MapReduce 插件，例如 <code>go build -race -buildmode=plugin ../mrapps/wc.go</code></p></li>
 <li><p>该实验依赖于 worker 共享文件系统。当所有 worker 都在同一台计算机上运行时，这很简单，但是如果 worker 在不同的计算机上运行，则需要像 GFS 这样的全局文件系统。</p></li>
-<li><p>中间文件的合理命名约定是 <code>mr-X-Y</code>，其中 X 是 Map 任务号，Y 是 reduce 任务号。</p></li>
+<li><p>中间文件的合理命名约定是 <code>mr-X-Y</code>，其中 X 是 Map 任务号，Y 是 Reduce 任务号。</p></li>
 <li><p>worker 的 map 任务代码需要将 intermediate key/value 存储在文件中，且能在 reduce 任务中正确读取。一个方法是使用 Go 的 <code>encoding/json</code> 包。将 k-v 写入 Json：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">enc := json.NewEncoder(file)</span><br><span class="line"><span class="keyword">for</span> _, kv := ... &#123;</span><br><span class="line">  err := enc.Encode(&amp;kv)</span><br></pre></td></tr></table></figure>
 <p>读取：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dec := json.NewDecoder(file)</span><br><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> kv KeyValue</span><br><span class="line">  <span class="keyword">if</span> err := dec.Decode(&amp;kv); err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line">  &#125;</span><br><span class="line">  kva = <span class="built_in">append</span>(kva, kv)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>worker 的 map 部分可以使用 <code>ihash(key)</code> 函数（在 <code>worker.go</code>） 来为给定的 key 选择 reduce 任务。</p></li>
+<li><p>对于以下操作可以参考 <code>mrsequential.go</code> ：</p>
+<ul>
+<li>为 Map 读取输入文件</li>
+<li>排序在 Map 和 Reduce 之间的中间 key/pair</li>
+<li>存储 Reduce 的输出到文件</li>
+</ul></li>
+<li><p>作为 RPC 服务器的 coordinator 是并发的，别忘记给共享变量加锁</p></li>
+<li><p>使用 race detector，<code>go build -race</code> 和 <code>go run -race</code>。<code>test-mr.sh</code> 运行时自带这些参数</p></li>
+<li><p>Workers 有时需要等待，例如，reduce 必须等待最后一个 map 执行完毕。一个方法是 Workers 周期性的询问 coordinator 并在请求间调用 <code>time.Sleep()</code> 挂起。另一种可能是对于 coordinator 中相关的 RPC handler 有一个循环调用 <code>time.Sleep()</code> 或 <code>sync.Cond</code> 来等待。每个 RPC handler 运行在自己的线程中，因此一个 RPC handler 等待并不会阻塞其他 RPC handler</p></li>
+<li><p>coordinator 不能准确的区分出崩溃的 workers，尚在运行但因为某些原因阻塞的 workers，尚在运行但速度慢到不能用的 workers。最好的方法是等待一段时间，然后放弃此类 workers 并将任务重新分发到其他 workers。本实验中等待时间为 10s，若超时则应该假设 workers 崩溃了（事实上可能没有）。</p></li>
+<li><p>若你实现了备份任务（backup tasks），注意：在测试时若 workers 正确执行则不应该调度额外的任务。备份任务应该在一段较长的时间后执行（如 10s）。</p></li>
+<li><p>为了测试崩溃恢复（crash recovery）需要 <code>mrapps/crash.go</code> 插件。他会随机退出某些 Map 或者 Reduce 函数。</p></li>
+<li><p>为了确保没有人在崩溃时观察到部分写入的文件，论文提到可以先写入临时文件，当完全完成写入后自动重命名。可以使用 <code>ioutil.TempFile</code> 创建临时文件，使用 <code>os.Rename</code> 自动重命名文件</p></li>
+<li><p><code>test-mr.sh</code> 在 <code>mt-tmp</code> 文件夹中运行。若出错了，可以在这里看到中间/输出文件。可以修改脚本实现出错就退出功能</p></li>
+<li><p><code>test-mr-many.sh</code> 提供包含超时的 <code>test-mr.sh</code> （我们将会这样测试你的代码）。他需要几个时间参数来跑测试。不要并行的运行多个 <code>test-mr.sh</code>，这样会因重用相同的 socket 而引起冲突</p></li>
+</ul>
+<h2 id="挑战">挑战</h2>
+<ul>
+<li>实现自己的 MapReduce 应用。例如 （论文中的 分布式 Grep）</li>
+<li>在拥有共享文件系统的实机上部署你的 MapReduce 程序</li>
 </ul>
 
     </div>
