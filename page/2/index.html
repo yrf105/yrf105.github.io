@@ -628,7 +628,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/05/go-%E5%9F%BA%E7%A1%80/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/05/go-%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -641,7 +641,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/04/05/go-%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">go-基础</a>
+          <a href="/2021/04/05/go-%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/" class="post-title-link" itemprop="url">go-基础语法</a>
         </h2>
 
         <div class="post-meta-container">
@@ -651,10 +651,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2021-04-05 21:00:03 / Modified: 21:36:24" itemprop="dateCreated datePublished" datetime="2021-04-05T21:00:03+08:00">2021-04-05</time>
+      <time title="Created: 2021-04-05 21:00:03" itemprop="dateCreated datePublished" datetime="2021-04-05T21:00:03+08:00">2021-04-05</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-04-18 15:25:15" itemprop="dateModified" datetime="2021-04-18T15:25:15+08:00">2021-04-18</time>
+      </span>
 
   
 </div>
@@ -666,9 +672,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="新手起航">新手起航</h2>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建 go.mod 文件追踪代码依赖</span></span><br><span class="line">go mod init example.com/hello</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改依赖路径为本地路径</span></span><br><span class="line">go mod edit -replace=example.com/greetings=../greetings</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加代码中的依赖</span></span><br><span class="line">go mod tidy</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在以 _test.go 结尾的代码中编写测试代码，运行以下命令执行测试</span></span><br><span class="line">go test</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成可执行文件</span></span><br><span class="line">go build</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装可执行文件</span></span><br><span class="line">go install</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认情况下会安装到以下命令输出的路径中</span></span><br><span class="line">go list -f &#x27;&#123;&#123;.Target&#125;&#125;&#x27;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定安装路径</span></span><br><span class="line">go env -w GOBIN=/path/to/your/bin</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将安装路径添加的 PATH</span></span><br><span class="line">export PATH=$PATH:/path/to/your/install/directory</span><br></pre></td></tr></table></figure>
-
+          <p><img src="C:\Users\Yuerf\Desktop\ongoing\blog\myblog\blog\source\images\v2-d7e021175d992db20f6220bcb7c3fa11_720w.jpg" /></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/04/05/go-%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
