@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"algolia":{"appID":"JPGR7YFEVR","apiKey":"3edec261c571a17c4749395953253b04","indexName":"myblog","hits":{"per_page":10}}};
+  </script>
+<meta name="description" content="我们为什么要读这篇文章  分布式存储系统是一种重要的抽象  接口&#x2F;语义应该是什么样的？ 内部是如何工作的？  GFS 涉及到许多本门课的主题  并行性能，容错，复制，一致性  优秀的系统论文-从应用程序到网络的详细信息 成功的现实世界设计  为什么分布式存储很难？  高性能 –&gt; 跨越多台服务器的分片数据 大量的服务器 -&gt; 持续的故障 容错 -&amp;g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译】6.824 2020 Lecture 3: GFS">
+<meta property="og:url" content="http://example.com/2021/04/15/%E3%80%90%E8%AF%91%E3%80%916-824-2020-Lecture-3-GFS/index.html">
+<meta property="og:site_name" content="wddxrw&#39;s blog">
+<meta property="og:description" content="我们为什么要读这篇文章  分布式存储系统是一种重要的抽象  接口&#x2F;语义应该是什么样的？ 内部是如何工作的？  GFS 涉及到许多本门课的主题  并行性能，容错，复制，一致性  优秀的系统论文-从应用程序到网络的详细信息 成功的现实世界设计  为什么分布式存储很难？  高性能 –&gt; 跨越多台服务器的分片数据 大量的服务器 -&gt; 持续的故障 容错 -&amp;g">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/04/15/images/image-20210415173219527.png">
+<meta property="article:published_time" content="2021-04-15T08:29:14.000Z">
+<meta property="article:modified_time" content="2021-04-16T07:05:52.783Z">
+<meta property="article:author" content="wddxrw">
+<meta property="article:tag" content="分布式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/15/images/image-20210415173219527.png">
+
+
+<link rel="canonical" href="http://example.com/2021/04/15/%E3%80%90%E8%AF%91%E3%80%916-824-2020-Lecture-3-GFS/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<title>【译】6.824 2020 Lecture 3: GFS | wddxrw's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">wddxrw's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E4%BB%AC%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%AF%BB%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0"><span class="nav-number">1.</span> <span class="nav-text">我们为什么要读这篇文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BE%88%E9%9A%BE"><span class="nav-number">2.</span> <span class="nav-text">为什么分布式存储很难？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BA%86%E4%B8%80%E8%87%B4%E6%80%A7%E6%88%91%E4%BB%AC%E5%BA%94%E8%AF%A5%E6%80%8E%E4%B9%88%E5%81%9A"><span class="nav-number">3.</span> <span class="nav-text">为了一致性我们应该怎么做？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BA%86%E5%A2%9E%E5%BC%BA%E5%AE%B9%E9%94%99%E6%80%A7%E7%9A%84%E5%A4%8D%E5%88%B6%E4%BD%BF%E5%BE%97%E5%BE%88%E9%9A%BE%E4%BF%9D%E6%8C%81%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">为了增强容错性的复制使得很难保持一致性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gfs"><span class="nav-number"></span> <span class="nav-text">GFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%83%85%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">情境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%99%E4%B8%9C%E8%A5%BF%E5%9C%A8-2003-%E5%B9%B4%E6%9C%89%E4%BB%80%E4%B9%88%E6%96%B0%E9%B2%9C%E7%9A%84%E4%BB%96%E4%BB%AC%E7%9A%84%E6%96%87%E7%AB%A0%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E8%A2%AB-sosp-%E6%94%B6%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text">这东西在 2003 年有什么新鲜的？他们的文章为什么能被 SOSP 收录？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%A6%82%E8%A7%88"><span class="nav-number">3.</span> <span class="nav-text">结构概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#master-state"><span class="nav-number">4.</span> <span class="nav-text">Master state</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#why-a-log-and-checkpoint"><span class="nav-number">5.</span> <span class="nav-text">why a log? and checkpoint?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#why-big-chunks"><span class="nav-number">6.</span> <span class="nav-text">why big chunks?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-c-%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E7%9A%84%E6%AD%A5%E9%AA%A4%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">7.</span> <span class="nav-text">客户端 C 读取文件的步骤是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#master-%E5%A6%82%E4%BD%95%E7%9F%A5%E9%81%93%E5%93%AA%E4%BA%9B%E5%9D%97%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%85%B7%E6%9C%89%E7%BB%99%E5%AE%9A%E7%9A%84%E5%9D%97"><span class="nav-number">8.</span> <span class="nav-text">master 如何知道哪些块服务器具有给定的块？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#c-%E5%81%9A%E4%B8%80%E4%B8%AA-record-append-%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">9.</span> <span class="nav-text">C 做一个 “record append” 的步骤？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gfs-%E5%90%91%E5%AE%A2%E6%88%B7%E6%8F%90%E4%BE%9B%E4%BB%80%E4%B9%88%E4%B8%80%E8%87%B4%E6%80%A7%E4%BF%9D%E8%AF%81"><span class="nav-number">10.</span> <span class="nav-text">GFS 向客户提供什么一致性保证？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E-gfs-%E5%A6%82%E4%BD%95%E6%BB%A1%E8%B6%B3%E6%AD%A4%E4%BF%9D%E8%AF%81%E6%88%91%E4%BB%AC%E8%AF%A5%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3"><span class="nav-number">11.</span> <span class="nav-text">对于 GFS 如何满足此保证，我们该如何理解？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%81%9A%E5%88%B0%E6%B2%A1%E6%9C%89%E5%BC%82%E5%B8%B8-%E4%B8%A5%E6%A0%BC%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">12.</span> <span class="nav-text">如何做到没有异常 – 严格一致性？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%9B%BE3"><span class="nav-number">13.</span> <span class="nav-text">性能（图3）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%BC%E5%BE%97%E8%80%83%E8%99%91%E7%9A%84%E9%9A%8F%E6%9C%BA%E9%97%AE%E9%A2%98"><span class="nav-number">14.</span> <span class="nav-text">值得考虑的随机问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gfs%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E5%9B%9E%E9%A1%BE%E6%80%A7%E9%87%87%E8%AE%BF"><span class="nav-number">15.</span> <span class="nav-text">GFS工程师的回顾性采访：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E6%8B%AC"><span class="nav-number">16.</span> <span class="nav-text">概括</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wddxrw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/15/%E3%80%90%E8%AF%91%E3%80%916-824-2020-Lecture-3-GFS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【译】6.824 2020 Lecture 3: GFS
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-04-15 16:29:14" itemprop="dateCreated datePublished" datetime="2021-04-15T16:29:14+08:00">2021-04-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-04-16 15:05:52" itemprop="dateModified" datetime="2021-04-16T15:05:52+08:00">2021-04-16</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="我们为什么要读这篇文章">我们为什么要读这篇文章</h2>
+<ul>
+<li>分布式存储系统是一种重要的抽象
+<ul>
+<li>接口/语义应该是什么样的？</li>
+<li>内部是如何工作的？</li>
+</ul></li>
+<li>GFS 涉及到许多本门课的主题
+<ul>
+<li>并行性能，容错，复制，一致性</li>
+</ul></li>
+<li>优秀的系统论文-从应用程序到网络的详细信息</li>
+<li>成功的现实世界设计</li>
+</ul>
+<h2 id="为什么分布式存储很难">为什么分布式存储很难？</h2>
+<ul>
+<li>高性能 –&gt; 跨越多台服务器的分片数据</li>
+<li>大量的服务器 -&gt; 持续的故障</li>
+<li>容错 -&gt; 复制</li>
+<li>复制 -&gt; 潜在的不一致性</li>
+<li>一致性 -&gt; 低性能</li>
+</ul>
+<h2 id="为了一致性我们应该怎么做">为了一致性我们应该怎么做？</h2>
+<ul>
+<li><p>理想模型：与单个服务器相同的行为</p></li>
+<li><p>服务器使用磁盘存储</p></li>
+<li><p>服务器一次执行一个客户端操作（即使在并发的情况下）</p></li>
+<li><p>读取操作可以正确反映之前的写入操作</p>
+<ul>
+<li>即使服务器崩溃或重启</li>
+</ul></li>
+<li><p>这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">假设 C1 和 C2 并发写，写入完成后 C3 和 C4 读。我们会看到什么呢？</span><br><span class="line">C1: Wx1</span><br><span class="line">C2: Wx2</span><br><span class="line">C3:		Rx?</span><br><span class="line">C4:			Rx?</span><br></pre></td></tr></table></figure>
+<p>答案：无论 1 还是 2，两者必须看到相同的值</p></li>
+<li><p>这是一个强一致性模型</p></li>
+<li><p>但是单个服务器的容错能力很差</p></li>
+</ul>
+<h2 id="为了增强容错性的复制使得很难保持一致性">为了增强容错性的复制使得很难保持一致性</h2>
+<ul>
+<li>一个简单但是糟糕的复制方案：
+<ul>
+<li>两个复制服务器，S1 和 S2</li>
+<li>客户端并发地写两者</li>
+<li>客户端只从其中一个读</li>
+</ul></li>
+<li>在我们的例子中，C1 和 C2 的写消息可能按照不同的顺序到达两个复制服务器
+<ul>
+<li>如果 C3 读 S1，它可能看到 x=1</li>
+<li>如果 C4 读 S2，它可能看到 x=2</li>
+</ul></li>
+<li>或者 S1 收到了写消息，但是向 S2 发出写消息之前客户端崩溃了</li>
+<li>这不是强一致的</li>
+<li>更好的一致性通常需要复制服务器通过交流来进行同步 – 可能很慢</li>
+<li>在性能和一致性之间有很多权衡，我们今天将会学习</li>
+</ul>
+<h1 id="gfs">GFS</h1>
+<h2 id="情境">情境</h2>
+<ul>
+<li>许多 Google 服务需要大型的快速统一存储系统 Mapreduce，crawler/indexer，日志存储/分析，Youtube（？）</li>
+<li>全局（在单个数据中心上）：任何客户端都可以读取任何文件，允许在应用程序之间共享数据</li>
+<li>在许多服务器/磁盘上自动“分片”每个文件以实现并行性能来增加可用空间</li>
+<li>自动从故障中恢复</li>
+<li>每次部署仅一个数据中心</li>
+<li>只是 Google 的应用程序/用户</li>
+<li>旨在顺序访问大文件；read or append，即不是针对小对象的低延迟数据库</li>
+</ul>
+<h2 id="这东西在-2003-年有什么新鲜的他们的文章为什么能被-sosp-收录">这东西在 2003 年有什么新鲜的？他们的文章为什么能被 SOSP 收录？</h2>
+<ul>
+<li>不是分布式，分片，容错的基本思想。</li>
+<li>大规模</li>
+<li>工业应用，真实世界经验</li>
+<li>弱一致性的成功应用</li>
+<li>单 master 的成功应用</li>
+</ul>
+<h2 id="结构概览">结构概览</h2>
+<ul>
+<li>客户端（库，RPC - 但不能视作 UNIX FS）</li>
+<li>每个文件拆分为独立的 64 MB 的块</li>
+<li>块服务器，每个文件的每个块（复制 3 份）分布在块服务器上以进行并行读/写（例如MapReduce），并允许大文件</li>
+<li>单个 master（！），master 复制</li>
+<li>工作划分：master 处理（命名），chunkserver（数据）</li>
+</ul>
+<h2 id="master-state">Master state</h2>
+<ul>
+<li><p>在 RAM 中（快，但是不能太大）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">filename -&gt; chunk handles 数组 （nv（不可变，需要持久化））</span><br><span class="line">chunk handle -&gt; version # (nv)</span><br><span class="line">			   list of chunkservers (v)</span><br><span class="line">			   primary (v)</span><br><span class="line">			   lease time (v)</span><br></pre></td></tr></table></figure></li>
+<li><p>在磁盘上</p>
+<ul>
+<li>日志，checkpoint</li>
+</ul></li>
+</ul>
+<h2 id="why-a-log-and-checkpoint">why a log? and checkpoint?</h2>
+<h2 id="why-big-chunks">why big chunks?</h2>
+<h2 id="客户端-c-读取文件的步骤是什么">客户端 C 读取文件的步骤是什么？</h2>
+<ol type="1">
+<li>C 发送文件名和偏移量给 master M（如果没有缓存的话）</li>
+<li>M 根据偏移量找到 chunkhandle</li>
+<li>M 仅使用最新版本的 chunkserver 列表进行回复</li>
+<li>C 缓存 handle + chunkserver list</li>
+<li>C 根据 chunkhandle 和 偏移量，向最近的 chunk server 发送请求</li>
+<li>chunk server 从磁盘上的 chunk 文件读取数据并返回</li>
+</ol>
+<h2 id="master-如何知道哪些块服务器具有给定的块">master 如何知道哪些块服务器具有给定的块？</h2>
+<h2 id="c-做一个-record-append-的步骤">C 做一个 “record append” 的步骤？</h2>
+<p><img src="../images/image-20210415173219527.png" alt="image-20210415173219527" style="zoom: 33%;" /></p>
+<ol type="1">
+<li>C向M询问文件的最后一块</li>
+<li>如果 M 看到块没有 primary （或租约已过期（lease expired））：
+<ol type="1">
+<li>如果没有带有最新版本号的chunkserver，则报错</li>
+<li>pick primary P and secondaries from those w/ latest version #</li>
+<li>increment version #, write to log on disk</li>
+<li>tell P and secondaries who they are, and new version #</li>
+<li>replicas write new version # to disk</li>
+</ol></li>
+<li>M tells C the primary and secondaries</li>
+<li>C sends data to all (just temporary...), waits</li>
+<li>C tells P to append</li>
+<li>P checks that lease hasn't expired, and chunk has space</li>
+<li>P picks an offset (at end of chunk)</li>
+<li>P writes chunk file (a Linux file)</li>
+<li>P tells each secondary the offset, tells to append to chunk file</li>
+<li>P waits for all secondaries to reply, or timeout secondary can reply "error" e.g. out of disk space</li>
+<li>P tells C "ok" or "error"</li>
+<li>C retries from start if error</li>
+</ol>
+<h2 id="gfs-向客户提供什么一致性保证">GFS 向客户提供什么一致性保证？</h2>
+<ul>
+<li>需要采用一种告诉应用程序如何使用 GFS 的形式。</li>
+<li>这是一种可能性：
+<ul>
+<li>如果 primary 告诉客户端记录添加成功，则随后打开该文件并对其进行扫描的任何 reader 都将在某处看到该附加记录。</li>
+<li>（并不是说失败的追加将不可见，而是对于所有 reader 将看到相同的文件内容或相同的记录顺序。）</li>
+</ul></li>
+</ul>
+<h2 id="对于-gfs-如何满足此保证我们该如何理解">对于 GFS 如何满足此保证，我们该如何理解？</h2>
+<ul>
+<li>看一下它对各种故障的处理：崩溃，崩溃+重启，崩溃+替换，消息丢失，分区。</li>
+<li>询问 GFS 如何确保关键属性。
+<ul>
+<li>如果附加客户端在尴尬的时刻失败了怎么办？这个尴尬的时刻存在吗？</li>
+<li>如果 appending client 已缓存过时的（错误的）primary 怎么办？</li>
+<li>如果阅读客户端缓存了过时的 secondary list 怎么办？</li>
+<li>主机崩溃+重启会导致它忘记文件吗？还是会忘记了哪些块服务器保存了相关的块？</li>
+<li>两个客户确实在同一时间记录追加。他们会覆盖彼此的记录吗？</li>
+<li>假设一个 secondary 从未接收到来自 primary 的 append 命令。如果 reading client 从 secondary 读会怎样？</li>
+<li>如果 primary 在给所有 secondary 发送 append 命令之前奔溃会怎样？没有看到 append 的 secondary 能被选为新的 primary 吗？</li>
+<li>chunkserver S4 带着一个过时的 chunk 拷贝离线了。primary 和 所有活跃的 secondaries 崩溃了。S4 在 primary 和 secondaries 之前活过来了。master 可以选择 S4 （带着过时 chunk）作为 primary 吗？有一个带着过时数据的 primary 好，还是根本没有拷贝好？</li>
+<li>如果一个 secondaries 总是写失败（例如死机，磁盘空间不够，磁盘损坏） primary 该怎么办？primary 应该从 secondaries 里排除此 secondary ，然后返回给客户端成功吗？还是 primary 应该继续发送操作并使其失败，从而使每个客户端写请求都失败？</li>
+<li>如果 S1 存活并且可以接受客户端的请求，但是 master 和 primary 之间的网络通信失败怎么办？“network partition”。master 应该选择一个新的 primary 吗？将会有两个 primary 吗？这样 append 可以发往其中一个，然后再向另一个同步？从而破坏一致性保证？“split brain”</li>
+<li>如果一个 partitioned primary 服务了客户端的 appends，同时它的租约过期了，并且 master 选择了一个新的 primary，新的 primary 需要通过 partitioned primary 更新到最新数据吗？</li>
+<li>如果 master 崩溃了。代替者知道死机的 master 所知道的吗？（每个 chunk 的版本号，primary，租约到期时间）</li>
+<li>谁/什么决定主机已死，必须更换？如果没有响应，master replicas 可以对 master 执行 ping 操作吗？</li>
+<li>如果整栋建筑停电怎么办？然后恢复电源，并重新启动所有服务器。</li>
+<li>或许因为副本太少。master 想要创建一个新的 chunk 副本。假设它是文件中的最后一块，而且正在被 append。新副本如何确保不丢失任何 append？毕竟它还不是 secondaries 中的一个。</li>
+<li>GFS 是否会在任何情况下破坏担保？也就是说，append 成功，但后续的reader 看不到该记录。所有主副本永久丢失状态（永久磁盘故障）。可能更糟：结果将是“没有答案”，而不是“不正确的数据”。"fail-stop"。持有该块的所有块服务器将永久丢失磁盘内容。再次，"fail-stop"；不是最糟糕的结果 CPU，RAM，网络或磁盘产生错误的值。校验和可以捕获某些情况，但不是全部。时间未正确同步，因此租约无法解决。因此，多个 primary，也许写到一个，读到另一个。</li>
+<li>GFS允许哪些可见的应用程序异常行为？所有客户端都会看到相同的文件内容吗？一位客户可以看到另一位客户根本看不到的记录吗？如果客户端两次读取文件，客户端会看到相同的内容吗？所有客户都会以相同的顺序看到成功附加的记录吗？</li>
+<li>这些异常会给应用带来麻烦吗？ MapReduce？</li>
+</ul></li>
+</ul>
+<h2 id="如何做到没有异常-严格一致性">如何做到没有异常 – 严格一致性？</h2>
+<p>也就是说，所有的客户端将会看到相同的文件内容。</p>
+<p>给出一个真正的答案太难了，这里有一些建议。</p>
+<ul>
+<li>primary 应该检测客户端的重复写请求。或者客户端根本就不这样做。</li>
+<li>所有的 secondaries 都应该完成每个写，否则什么也不做。试探性地写直到所有人都答应完成？在所有人都同意执行写操作之前，不要暴露它们！</li>
+<li>如果 primary 崩溃，复制们将会错失一些操作。新的 primary 必须和所有的复制通信以发现所有最近的操作，并和 secondaries 同步。</li>
+<li>为避免客户端从过时的 secondary 中读取内容，要么所有客户端读都必须从 primary 中读，要么 secondary 也必须具有租约。</li>
+<li>你将在实验2和3中看到所有这些内容！</li>
+</ul>
+<h2 id="性能图3">性能（图3）</h2>
+<ul>
+<li>读取的总吞吐量大（3 copies，striping）
+<ul>
+<li>16 个块服务器总计 94 MB /秒，或每个块服务器 6 MB /秒这样好吗？</li>
+<li>一个磁盘的顺序吞吐量约为30 MB / s， 一个 NIC 约为 10 MB / s</li>
+<li>接近饱和的网络（交换机间链接）、</li>
+<li>因此：单个服务器性能低下，但是可伸缩性很好哪个更重要？</li>
+</ul></li>
+<li>表3 报告了生产 GFS 的 500 MB /秒，这很多写入不同的文件，其数量可能低于最大数量，作者指责他们的网络栈（但没有详细信息）</li>
+<li>并发追加到单个文件，受存储最后一块的服务器限制</li>
+<li>15 年后难以解释，例如磁盘有多快？</li>
+</ul>
+<h2 id="值得考虑的随机问题">值得考虑的随机问题</h2>
+<ul>
+<li>良好地支持小文件需要什么？</li>
+<li>支持数十亿个文件需要什么？</li>
+<li>GFS可以用作广域文件系统吗？</li>
+<li>在不同城市放置复制品？</li>
+<li>所有副本放在一个数据中心，容错能力不强！</li>
+<li>GFS从故障中恢复需要多长时间？
+<ul>
+<li>primary/secondary？</li>
+<li>master？</li>
+</ul></li>
+<li>GFS如何应对慢速块服务器？</li>
+</ul>
+<h2 id="gfs工程师的回顾性采访">GFS工程师的回顾性采访：</h2>
+<ul>
+<li>http://queue.acm.org/detail.cfm?id=1594206</li>
+<li>文件计数是最大的问题
+<ul>
+<li>最终数字增长到表 2 的1000倍！</li>
+<li>很难容纳在 mater 的 RAM 中</li>
+<li>mater 扫描所有文件/块进行GC速度很慢</li>
+</ul></li>
+<li>1000 个客户端使得 master 上的CPU负载过重</li>
+<li>应用程序必须设计为能够应对 GFS 语义和局限</li>
+<li>master 故障转移最初完全是手动的，需要10分钟</li>
+<li>BigTable 是 many-small-files problem 的答案，并且 Colossus 将在许多 mater 上分片 master 数据</li>
+</ul>
+<h2 id="概括">概括</h2>
+<ul>
+<li>性能，容错，一致性的案例研究
+<ul>
+<li>专为 MapReduce 应用程序</li>
+</ul></li>
+<li>好主意：
+<ul>
+<li>全局集群文件系统作为通用基础结构</li>
+<li>命名（master）与存储（chunkserver）的分离</li>
+<li>分片以实现并行吞吐</li>
+<li>巨大的文件/块以减少开销</li>
+<li>顺序写入的 primary</li>
+<li>leases to prevent split-brain chunkserver primaries</li>
+</ul></li>
+<li>不太好：
+<ul>
+<li>single master performance
+<ul>
+<li>内存和CPU耗尽</li>
+</ul></li>
+<li>对于小型文件，chunkservers效率不高</li>
+<li>缺乏对 mater 副本的自动故障转移</li>
+<li>也许一致性放得太松了</li>
+</ul></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag"># 分布式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/15/%E5%8D%8F%E7%A8%8B-%E8%B5%84%E6%BA%90%E6%B1%87%E6%80%BB/" rel="prev" title="协程-资源汇总">
+                  <i class="fa fa-chevron-left"></i> 协程-资源汇总
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/16/%E3%80%90%E8%AF%91%E3%80%91GFS-FAQ/" rel="next" title="【译】GFS FAQ">
+                  【译】GFS FAQ <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wddxrw</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.8.5/dist/algoliasearch-lite.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.15.0/dist/instantsearch.production.min.js"></script><script src="/js/algolia-search.js"></script>
+
+
+
+<script>
+if (document.querySelectorAll('.pdf-container').length) {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/pdfobject@2.2.4/pdfobject.min.js', () => {
+    document.querySelectorAll('.pdf-container').forEach(element => {
+      PDFObject.embed(element.dataset.target, element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height   : element.dataset.height
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+  
+
+
+
+
+  
+
+
+</body>
+</html>

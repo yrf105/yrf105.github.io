@@ -31,7 +31,7 @@
 <meta property="og:description" content="环境配置 设置 PYTHONPATH （python 环境变量） 123# 打印环境变量import sysprint(sys.path) 12# 在 shell 中添加环境变量export PYTHONPATH&#x3D;$(pwd):$&amp;#123;PYTHONPATH&amp;#125; 123# 在程序中添加环境变量import syssys.path.append([路径]) requirem">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-03-14T00:35:22.000Z">
-<meta property="article:modified_time" content="2021-04-15T02:40:14.856Z">
+<meta property="article:modified_time" content="2021-04-16T00:27:48.452Z">
 <meta property="article:author" content="wddxrw">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
@@ -182,7 +182,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-pythonpath-python-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text">设置 PYTHONPATH （python 环境变量）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#requirements.txt-%E7%94%9F%E6%88%90%E5%92%8C%E5%AF%BC%E5%85%A5"><span class="nav-number">1.2.</span> <span class="nav-text">requirements.txt 生成和导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-cuda-%E7%89%88%E6%9C%AC"><span class="nav-number">1.3.</span> <span class="nav-text">查看 cuda 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BD%E5%86%85%E6%BA%90%E5%AE%89%E8%A3%85%E6%8C%87%E5%AE%9A%E7%89%88%E6%9C%AC-pytorch"><span class="nav-number">1.4.</span> <span class="nav-text">国内源安装指定版本 pytorch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">常见任务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%85%A5%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">读入命令行参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%85%A5-h5-%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">读入 h5 文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm"><span class="nav-number">3.</span> <span class="nav-text">pycharm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E9%A1%B9%E7%9B%AE%E8%B7%AF%E5%BE%84"><span class="nav-number">3.1.</span> <span class="nav-text">配置项目路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch"><span class="nav-number">4.</span> <span class="nav-text">pytorch</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#torch.bmm"><span class="nav-number">4.1.</span> <span class="nav-text">torch.bmm</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-pythonpath-python-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text">设置 PYTHONPATH （python 环境变量）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#requirements.txt-%E7%94%9F%E6%88%90%E5%92%8C%E5%AF%BC%E5%85%A5"><span class="nav-number">1.2.</span> <span class="nav-text">requirements.txt 生成和导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B-cuda-%E7%89%88%E6%9C%AC"><span class="nav-number">1.3.</span> <span class="nav-text">查看 cuda 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BD%E5%86%85%E6%BA%90%E5%AE%89%E8%A3%85%E6%8C%87%E5%AE%9A%E7%89%88%E6%9C%AC-pytorch"><span class="nav-number">1.4.</span> <span class="nav-text">国内源安装指定版本 pytorch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">常见任务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%85%A5%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">读入命令行参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%85%A5-h5-%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">读入 h5 文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pycharm"><span class="nav-number">3.</span> <span class="nav-text">pycharm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E9%A1%B9%E7%9B%AE%E8%B7%AF%E5%BE%84"><span class="nav-number">3.1.</span> <span class="nav-text">配置项目路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#debug-%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">3.2.</span> <span class="nav-text">debug 带参数的代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch"><span class="nav-number">4.</span> <span class="nav-text">pytorch</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#torch.bmm"><span class="nav-number">4.1.</span> <span class="nav-text">torch.bmm</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -196,7 +196,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -273,7 +273,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2021-04-15 10:40:14" itemprop="dateModified" datetime="2021-04-15T10:40:14+08:00">2021-04-15</time>
+        <time title="Modified: 2021-04-16 08:27:48" itemprop="dateModified" datetime="2021-04-16T08:27:48+08:00">2021-04-16</time>
       </span>
 
   
@@ -308,6 +308,8 @@
 <h2 id="pycharm">pycharm</h2>
 <h3 id="配置项目路径">配置项目路径</h3>
 <p>File -&gt; Settings -&gt; Project -&gt; Project Structure</p>
+<h3 id="debug-带参数的代码">debug 带参数的代码</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Run -&gt; Debug Configurations -&gt; Parameters</span><br></pre></td></tr></table></figure>
 <h2 id="pytorch">pytorch</h2>
 <h3 id="torch.bmm">torch.bmm</h3>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">torch.bmm(input, mat2, *, deterministic&#x3D;False, out&#x3D;None) → Tensor</span><br></pre></td></tr></table></figure>
