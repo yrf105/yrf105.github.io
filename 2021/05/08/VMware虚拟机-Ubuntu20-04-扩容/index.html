@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"algolia":{"appID":"JPGR7YFEVR","apiKey":"3edec261c571a17c4749395953253b04","indexName":"myblog","hits":{"per_page":10}}};
+  </script>
+<meta name="description" content="img">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VMware虚拟机_Ubuntu20.04_扩容">
+<meta property="og:url" content="http://example.com/2021/05/08/VMware%E8%99%9A%E6%8B%9F%E6%9C%BA-Ubuntu20-04-%E6%89%A9%E5%AE%B9/index.html">
+<meta property="og:site_name" content="wddxrw&#39;s blog">
+<meta property="og:description" content="img">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/05/08/images/949069-20200416104045527-1858978940.png">
+<meta property="article:published_time" content="2021-05-08T01:32:54.000Z">
+<meta property="article:modified_time" content="2021-05-08T02:21:15.900Z">
+<meta property="article:author" content="wddxrw">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/08/images/949069-20200416104045527-1858978940.png">
+
+
+<link rel="canonical" href="http://example.com/2021/05/08/VMware%E8%99%9A%E6%8B%9F%E6%9C%BA-Ubuntu20-04-%E6%89%A9%E5%AE%B9/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+<title>VMware虚拟机_Ubuntu20.04_扩容 | wddxrw's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">wddxrw's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wddxrw</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/08/VMware%E8%99%9A%E6%8B%9F%E6%9C%BA-Ubuntu20-04-%E6%89%A9%E5%AE%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wddxrw">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wddxrw's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VMware虚拟机_Ubuntu20.04_扩容
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-05-08 09:32:54 / Modified: 10:21:15" itemprop="dateCreated datePublished" datetime="2021-05-08T09:32:54+08:00">2021-05-08</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <figure>
+<img src="../images/949069-20200416104045527-1858978940.png" alt="" /><figcaption>img</figcaption>
+</figure>
+<span id="more"></span>
+<p>首先需要在 VMware 虚拟机设置界面添加磁盘</p>
+<ol type="1">
+<li><p><code>sudo fdisk -l</code> # 查看磁盘信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="meta">#</span><span class="bash"> 磁盘容量变为 50 GB</span></span><br><span class="line">GPT PMBR size mismatch (41943039 != 104857599) will be corrected by write.</span><br><span class="line">Disk /dev/sda: 50 GiB, 53687091200 bytes, 104857600 sectors</span><br><span class="line">Disk model: VMware Virtual S</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: gpt</span><br><span class="line">Disk identifier: 84577F06-B635-450B-B82D-5B1129708295</span><br><span class="line">......</span><br></pre></td></tr></table></figure></li>
+<li><p><code>df -h</code> # 查看文件系统使用情况</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 根目录已满</span></span><br><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              391M  1.5M  390M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   19G   18G  361M  99% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda2                          976M  298M  611M  33% /boot</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/1944</span><br><span class="line">/dev/loop1                          68M   68M     0 100% /snap/lxd/20326</span><br><span class="line">/dev/loop2                          33M   33M     0 100% /snap/snapd/11588</span><br><span class="line">/dev/loop3                          71M   71M     0 100% /snap/lxd/19647</span><br><span class="line">/dev/loop4                          56M   56M     0 100% /snap/core18/1997</span><br><span class="line">/dev/loop5                          33M   33M     0 100% /snap/snapd/11402</span><br><span class="line">tmpfs                              391M     0  391M   0% /run/user/1000</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>lsblk</code> # 查看块设备信息</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">loop0                       7:0    0 55.4M  1 loop /snap/core18/1944</span><br><span class="line">loop1                       7:1    0 67.6M  1 loop /snap/lxd/20326</span><br><span class="line">loop2                       7:2    0 32.3M  1 loop /snap/snapd/11588</span><br><span class="line">loop3                       7:3    0 70.4M  1 loop /snap/lxd/19647</span><br><span class="line">loop4                       7:4    0 55.5M  1 loop /snap/core18/1997</span><br><span class="line">loop5                       7:5    0 32.3M  1 loop /snap/snapd/11402</span><br><span class="line">sda                         8:0    0   50G  0 disk</span><br><span class="line">├─sda1                      8:1    0    1M  0 part</span><br><span class="line">├─sda2                      8:2    0    1G  0 part /boot</span><br><span class="line">└─sda3                      8:3    0   19G  0 part</span><br><span class="line">  └─ubuntu--vg-ubuntu--lv 253:0    0   19G  0 lvm  /</span><br><span class="line">sr0                        11:0    1  1.1G  0 rom</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>sudo pvdisplay</code> # 查看物理卷信息</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">--- Physical volume ---</span><br><span class="line">PV Name               /dev/sda3</span><br><span class="line">VG Name               ubuntu-vg</span><br><span class="line">PV Size               &lt;19.00 GiB / not usable 0</span><br><span class="line">Allocatable           yes (but full)</span><br><span class="line">PE Size               4.00 MiB</span><br><span class="line">Total PE              4863</span><br><span class="line">Free PE               0</span><br><span class="line">Allocated PE          4863</span><br><span class="line">PV UUID               NwcakF-X1uA-Ac1D-5oNa-gBZc-cVwS-3qZMjK</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>sudo fdisk /dev/sda</code> # 新建分区</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Welcome to fdisk (util-linux 2.34).</span><br><span class="line">Changes will remain in memory only, until you decide to write them.</span><br><span class="line">Be careful before using the write command.</span><br><span class="line"></span><br><span class="line">Command (m for help): n</span><br><span class="line">...... # 一路确认就可以</span><br><span class="line"></span><br><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/sda: 50 GiB, 53687091200 bytes, 104857600 sectors</span><br><span class="line">Disk model: VMware Virtual S</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: gpt</span><br><span class="line">Disk identifier: 84577F06-B635-450B-B82D-5B1129708295</span><br><span class="line"></span><br><span class="line">Device        Start       End  Sectors Size Type</span><br><span class="line">/dev/sda1      2048      4095     2048   1M BIOS boot</span><br><span class="line">/dev/sda2      4096   2101247  2097152   1G Linux filesystem</span><br><span class="line">/dev/sda3   2101248  41940991 39839744  19G Linux filesystem</span><br><span class="line">/dev/sda4  41940992 104857566 62916575  30G Linux filesystem</span><br><span class="line"></span><br><span class="line">Command (m for help): q</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>sudo partprobe /dev/sda</code> # 刷新分区</p></li>
+<li><p><code>sudo pvcreate /dev/sda4</code> # 新建物理卷</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Physical volume &quot;/dev/sda4&quot; successfully created.</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>sudo vgdisplay</code> # 查看卷组名称</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">--- Volume group ---</span><br><span class="line">VG Name               ubuntu-vg</span><br><span class="line">System ID</span><br><span class="line">Format                lvm2</span><br><span class="line">Metadata Areas        1</span><br><span class="line">Metadata Sequence No  2</span><br><span class="line">VG Access             read/write</span><br><span class="line">VG Status             resizable</span><br><span class="line">MAX LV                0</span><br><span class="line">Cur LV                1</span><br><span class="line">Open LV               1</span><br><span class="line">Max PV                0</span><br><span class="line">Cur PV                1</span><br><span class="line">Act PV                1</span><br><span class="line">VG Size               &lt;19.00 GiB</span><br><span class="line">PE Size               4.00 MiB</span><br><span class="line">Total PE              4863</span><br><span class="line">Alloc PE / Size       4863 / &lt;19.00 GiB</span><br><span class="line">Free  PE / Size       0 / 0</span><br><span class="line">VG UUID               Ftrndo-6XEv-TRst-AdHc-9T2o-mzF6-Vf5ar7</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>sudo vgextend ubuntu-vg /dev/sda4</code> # 扩展物理卷到卷组</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Volume group &quot;ubuntu-vg&quot; successfully extended</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>sudo lvdisplay</code> # 查看逻辑卷名称</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">--- Logical volume ---</span><br><span class="line">LV Path                /dev/ubuntu-vg/ubuntu-lv</span><br><span class="line">LV Name                ubuntu-lv</span><br><span class="line">VG Name                ubuntu-vg</span><br><span class="line">LV UUID                at0TrC-g1vR-HLhe-UStj-b1LQ-5p2f-wlSn9J</span><br><span class="line">LV Write Access        read/write</span><br><span class="line">LV Creation host, time ubuntu-server, 2021-03-23 22:35:54 +0000</span><br><span class="line">LV Status              available</span><br><span class="line"><span class="meta">#</span><span class="bash"> open                 1</span></span><br><span class="line">LV Size                &lt;19.00 GiB</span><br><span class="line">Current LE             4863</span><br><span class="line">Segments               1</span><br><span class="line">Allocation             inherit</span><br><span class="line">Read ahead sectors     auto</span><br><span class="line">- currently set to     256</span><br><span class="line">Block device           253:0</span><br></pre></td></tr></table></figure></li>
+<li><p><code>sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv</code> # 将卷组空闲分区扩展到逻辑卷</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Size of logical volume ubuntu-vg/ubuntu-lv changed from &lt;19.00 GiB (4863 extents) to 48.99 GiB (12542 extents).</span><br><span class="line">Logical volume ubuntu-vg/ubuntu-lv successfully resized.</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>lsblk</code> # 显示块设备信息</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">loop0                       7:0    0 55.4M  1 loop /snap/core18/1944</span><br><span class="line">loop1                       7:1    0 67.6M  1 loop /snap/lxd/20326</span><br><span class="line">loop2                       7:2    0 32.3M  1 loop /snap/snapd/11588</span><br><span class="line">loop3                       7:3    0 70.4M  1 loop /snap/lxd/19647</span><br><span class="line">loop4                       7:4    0 55.5M  1 loop /snap/core18/1997</span><br><span class="line">loop5                       7:5    0 32.3M  1 loop /snap/snapd/11402</span><br><span class="line">sda                         8:0    0   50G  0 disk</span><br><span class="line">├─sda1                      8:1    0    1M  0 part</span><br><span class="line">├─sda2                      8:2    0    1G  0 part /boot</span><br><span class="line">├─sda3                      8:3    0   19G  0 part</span><br><span class="line">│ └─ubuntu--vg-ubuntu--lv 253:0    0   49G  0 lvm  /</span><br><span class="line">└─sda4                      8:4    0   30G  0 part</span><br><span class="line">  └─ubuntu--vg-ubuntu--lv 253:0    0   49G  0 lvm  /</span><br><span class="line">sr0                        11:0    1  1.1G  0 rom</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>sudo resize2fs /dev/ubuntu-vg/ubuntu-lv</code> # 刷新逻辑分区</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">resize2fs 1.45.5 (07-Jan-2020)</span><br><span class="line">Filesystem at /dev/ubuntu-vg/ubuntu-lv is mounted on /; on-line resizing required</span><br><span class="line">old_desc_blocks = 3, new_desc_blocks = 7</span><br><span class="line">The filesystem on /dev/ubuntu-vg/ubuntu-lv is now 12843008 (4k) blocks long.</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>df -h</code> # 扩容成功</p>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Filesystem                         Size  Used Avail Use% Mounted on</span><br><span class="line">udev                               1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                              391M  1.5M  390M   1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv   49G   18G   29G  38% /</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs                              5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs                              2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda2                          976M  298M  611M  33% /boot</span><br><span class="line">/dev/loop0                          56M   56M     0 100% /snap/core18/1944</span><br><span class="line">/dev/loop1                          68M   68M     0 100% /snap/lxd/20326</span><br><span class="line">/dev/loop2                          33M   33M     0 100% /snap/snapd/11588</span><br><span class="line">/dev/loop3                          71M   71M     0 100% /snap/lxd/19647</span><br><span class="line">/dev/loop4                          56M   56M     0 100% /snap/core18/1997</span><br><span class="line">/dev/loop5                          33M   33M     0 100% /snap/snapd/11402</span><br><span class="line">tmpfs                              391M     0  391M   0% /run/user/1000</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<h2 id="参考">参考</h2>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/83340525">Linux 扩容 / 根分区(LVM+非LVM)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lovektm/article/details/78461453">LVM（ext4+xfs的扩容和缩容）</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/diantong/p/10554831.html">LVM管理</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/05/MISA-Modality-Invariant-and-Specific-Representations-for-Multimodal-Sentiment-Analysis/" rel="prev" title="MISA: Modality-Invariant and -Specific Representations for Multimodal Sentiment Analysis">
+                  <i class="fa fa-chevron-left"></i> MISA: Modality-Invariant and -Specific Representations for Multimodal Sentiment Analysis
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wddxrw</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.8.5/dist/algoliasearch-lite.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.15.0/dist/instantsearch.production.min.js"></script><script src="/js/algolia-search.js"></script>
+
+
+
+<script>
+if (document.querySelectorAll('.pdf-container').length) {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/pdfobject@2.2.4/pdfobject.min.js', () => {
+    document.querySelectorAll('.pdf-container').forEach(element => {
+      PDFObject.embed(element.dataset.target, element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height   : element.dataset.height
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+  
+
+
+
+
+  
+
+
+</body>
+</html>
